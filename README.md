@@ -35,7 +35,7 @@ pdm add elmo-sdk
 
 ## Usage
 
-Set `ELMO_API_KEY` in your environment, then call the API:
+Set [`ELMO_API_KEY`](https://elmohq.com/docs/api#authentication) in your environment, then call the API:
 
 ```python
 from elmo_sdk import Elmo
@@ -132,10 +132,10 @@ The client reads `ELMO_API_KEY` from the environment. To pass the value yourself
 ```python
 from elmo_sdk import Elmo
 
-elmo = Elmo(api_key="…")
+elmo = Elmo(api_key="elmo_…")
 ```
 
-`api_key` also takes a function that returns the value, such as one that reads it from a secret store. The client calls it for each request.
+Get `api_key` from [the page that issues it](https://elmohq.com/docs/api#authentication). `api_key` also takes a function that returns the value, such as one that reads it from a secret store. The client calls it for each request.
 
 ### Base URL
 

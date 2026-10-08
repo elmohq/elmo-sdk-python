@@ -17,7 +17,7 @@ async def test_logs_nothing_unless_asked_to(
     monkeypatch.delenv("ELMO_LOG", raising=False)
     caplog.set_level(logging.DEBUG, logger="elmo_sdk")
     api = StandIn(SUCCESS)
-    client = clients(api.answer, api_key="test")
+    client = clients(api.answer, api_key="elmo_test")
     await result(client.me.get())
     assert caplog.records == []
 
@@ -27,7 +27,7 @@ async def test_never_logs_the_credential(
 ) -> None:
     caplog.set_level(logging.DEBUG, logger="elmo_sdk")
     api = StandIn(SUCCESS)
-    client = clients(api.answer, api_key="test", log_level="debug")
+    client = clients(api.answer, api_key="elmo_test", log_level="debug")
     await result(client.me.get())
     assert caplog.records
-    assert "test" not in caplog.text
+    assert "elmo_test" not in caplog.text

@@ -30,6 +30,6 @@ async def test_raises_the_class_named_for_the_status(
     clients: Clients, status: int, error: type[Exception]
 ) -> None:
     api = StandIn({"status": status})
-    client = clients(api.answer, api_key="test", retry=False)
+    client = clients(api.answer, api_key="elmo_test", retry=False)
     with pytest.raises(error):
         await result(client.me.get())

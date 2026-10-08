@@ -83,7 +83,7 @@ class RequestOptions(_BaseRequestOptions, total=False):
 
     api_key: CredentialValue
     """An instance admin key from `ADMIN_API_KEYS`, or an organization key
-    (`elmo_…`) issued from the dashboard.
+    (`elmo_…`) issued from the dashboard. Its value starts with `elmo_`.
 
     Read from the `ELMO_API_KEY` environment variable when unset.
     """
@@ -99,7 +99,7 @@ class AsyncRequestOptions(_BaseRequestOptions, total=False):
 
     api_key: AsyncCredentialValue
     """An instance admin key from `ADMIN_API_KEYS`, or an organization key
-    (`elmo_…`) issued from the dashboard.
+    (`elmo_…`) issued from the dashboard. Its value starts with `elmo_`.
 
     Read from the `ELMO_API_KEY` environment variable when unset.
     """
