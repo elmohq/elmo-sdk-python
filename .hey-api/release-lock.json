@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "python": {
+      "commit": "d7f167fd84ae2f3876f10b70ccddf94bfe7da19c",
+      "contract": "sha256:9cdf2b9073b2512ffaa0329e7724988db96e5c93a657a3e67b41cf908d9ef55e",
+      "generator": "0.0.24",
+      "version": "0.1.0"
+    }
+  },
+  "version": 1
+}

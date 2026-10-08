@@ -1,0 +1,84 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "elmo-sdk"
+version = "0.1.0"
+description = "Python SDK for the Elmo API"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE.md"]
+requires-python = ">=3.10"
+keywords = [
+    "api",
+    "client",
+    "elmo",
+    "sdk",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: AsyncIO",
+    "Framework :: Pydantic :: 2",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = [
+    "httpx2>=2",
+    "pydantic>=2.11,<3",
+    "typing-extensions>=4.5",
+]
+
+[project.optional-dependencies]
+http2 = [
+    "httpx2[http2]>=2",
+]
+
+[project.urls]
+Repository = "https://github.com/elmohq/elmo-sdk-python"
+Issues = "https://github.com/elmohq/elmo-sdk-python/issues"
+
+[dependency-groups]
+dev = [
+    "hatchling>=1.27",
+    "pytest>=8",
+    "pytest-asyncio>=1",
+    "ruff>=0.14.14",
+    "ty>=0.0.84",
+    "typing-extensions>=4.5",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/elmo_sdk"]
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+# The rules this code is checked against, named rather than left to the defaults, which
+# change between ruff releases.
+select = ["B", "E", "F", "FURB", "I", "PIE", "PLC0105", "PYI", "RUF022", "SIM", "UP", "W"]
+ignore = [
+    # A docstring keeps each `Args:` entry on one line, which is the line an editor
+    # shows on hover, and a long string is data. Neither breaks.
+    "E501",
+    # `lambda: {}` takes the type the field declares. `dict` is `dict[Unknown, Unknown]`
+    # to a strict type checker.
+    "PIE807",
+    # `str | Literal["a", "b"]` takes any string, and an editor still offers the values
+    # the API knows.
+    "PYI051",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-m 'not live'"
+markers = ["live: calls the API itself. Run with `pytest -m live`."]
+
+[tool.ty.rules]
+unused-ignore-comment = "error"
