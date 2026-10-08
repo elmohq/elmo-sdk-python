@@ -111,7 +111,7 @@ if TYPE_CHECKING:
         ToolsWithResponse,
     )
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 """The version of this package."""
 
 
@@ -219,7 +219,7 @@ class Elmo:
             ```
 
         Args:
-            api_key: An instance admin key from `ADMIN_API_KEYS`, or an organization key (`elmo_…`) issued from the dashboard. Read from the `ELMO_API_KEY` environment variable when unset.
+            api_key: An instance admin key from `ADMIN_API_KEYS`, or an organization key (`elmo_…`) issued from the dashboard. Its value starts with `elmo_`. Read from the `ELMO_API_KEY` environment variable when unset.
             auth: Decides each credential a call sends, given the scheme and the value its option holds. What it returns is sent, so return the value to keep it. `False` sends no credential.
             base_url: Override the base URL calls are sent to. Read from the `ELMO_BASE_URL` environment variable when unset. Defaults to `"/api/v1"`.
             client: A client to dispatch through, in place of one built from options. For sharing one configured client across several SDKs.
@@ -280,7 +280,7 @@ class Elmo:
         not change, and the two send over one connection pool.
 
         Args:
-            api_key: An instance admin key from `ADMIN_API_KEYS`, or an organization key (`elmo_…`) issued from the dashboard. Read from the `ELMO_API_KEY` environment variable when unset.
+            api_key: An instance admin key from `ADMIN_API_KEYS`, or an organization key (`elmo_…`) issued from the dashboard. Its value starts with `elmo_`. Read from the `ELMO_API_KEY` environment variable when unset.
             auth: Decides each credential a call sends, given the scheme and the value its option holds. What it returns is sent, so return the value to keep it. `False` sends no credential.
             base_url: Override the base URL calls are sent to. Read from the `ELMO_BASE_URL` environment variable when unset. Defaults to `"/api/v1"`.
             default_headers: Headers to send with every call. Merged per name with whatever a call sets, and `None` drops one.
@@ -521,7 +521,7 @@ class AsyncElmo:
             ```
 
         Args:
-            api_key: An instance admin key from `ADMIN_API_KEYS`, or an organization key (`elmo_…`) issued from the dashboard. Read from the `ELMO_API_KEY` environment variable when unset.
+            api_key: An instance admin key from `ADMIN_API_KEYS`, or an organization key (`elmo_…`) issued from the dashboard. Its value starts with `elmo_`. Read from the `ELMO_API_KEY` environment variable when unset.
             auth: Decides each credential a call sends, given the scheme and the value its option holds. What it returns is sent, so return the value to keep it. `False` sends no credential.
             base_url: Override the base URL calls are sent to. Read from the `ELMO_BASE_URL` environment variable when unset. Defaults to `"/api/v1"`.
             client: A client to dispatch through, in place of one built from options. For sharing one configured client across several SDKs.
@@ -582,7 +582,7 @@ class AsyncElmo:
         not change, and the two send over one connection pool.
 
         Args:
-            api_key: An instance admin key from `ADMIN_API_KEYS`, or an organization key (`elmo_…`) issued from the dashboard. Read from the `ELMO_API_KEY` environment variable when unset.
+            api_key: An instance admin key from `ADMIN_API_KEYS`, or an organization key (`elmo_…`) issued from the dashboard. Its value starts with `elmo_`. Read from the `ELMO_API_KEY` environment variable when unset.
             auth: Decides each credential a call sends, given the scheme and the value its option holds. What it returns is sent, so return the value to keep it. `False` sends no credential.
             base_url: Override the base URL calls are sent to. Read from the `ELMO_BASE_URL` environment variable when unset. Defaults to `"/api/v1"`.
             default_headers: Headers to send with every call. Merged per name with whatever a call sets, and `None` drops one.
