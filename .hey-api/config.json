@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "python": {
+      "package": {
+        "destination": [
+          "pypi"
+        ]
+      }
+    }
+  }
+}

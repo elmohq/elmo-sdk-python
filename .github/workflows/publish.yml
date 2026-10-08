@@ -1,0 +1,51 @@
+name: Publish
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build:
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+
+      - name: Build the package
+        run: npx --yes --registry https://npm.pkg.heyapi.dev/ hey-api@0.1.0-elmo.1 publish --build
+        env:
+          npm_config_//npm.pkg.heyapi.dev/:_authToken: ${{ secrets.HEY_API_PKG_TOKEN }}
+
+  pypi:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/elmo-sdk/
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+
+      - name: Publish to PyPI
+        run: npx --yes --registry https://npm.pkg.heyapi.dev/ hey-api@0.1.0-elmo.1 publish --destination pypi
+        env:
+          npm_config_//npm.pkg.heyapi.dev/:_authToken: ${{ secrets.HEY_API_PKG_TOKEN }}
