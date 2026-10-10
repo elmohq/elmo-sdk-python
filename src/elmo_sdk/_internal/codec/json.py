@@ -12,6 +12,7 @@ from typing import Any, TypeGuard, cast
 from uuid import UUID
 
 from ..core.errors import ElmoError
+from ..core.text import iso_duration
 from ..core.types import EncodedBody
 
 
@@ -23,24 +24,6 @@ def is_sequence(value: Any) -> bool:
     if isinstance(value, (str, bytes, bytearray, memoryview)):
         return False
     return isinstance(value, Sequence)
-
-
-def iso_duration(value: timedelta) -> str:
-    sign = "-" if value < timedelta(0) else ""
-    value = abs(value)
-    hours, rest = divmod(value.seconds, 3600)
-    minutes, seconds = divmod(rest, 60)
-    clock = ""
-    if hours:
-        clock += f"{hours}H"
-    if minutes:
-        clock += f"{minutes}M"
-    if value.microseconds:
-        clock += f"{seconds}.{value.microseconds:06d}".rstrip("0") + "S"
-    elif seconds or not (value.days or clock):
-        clock += f"{seconds}S"
-    days = f"{value.days}D" if value.days else ""
-    return f"{sign}P{days}T{clock}" if clock else f"{sign}P{days}"
 
 
 def type_name(value: Any) -> str:

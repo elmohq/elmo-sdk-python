@@ -26,7 +26,7 @@ jobs:
       - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
 
       - name: Build the package
-        run: npx --yes --registry https://npm.pkg.heyapi.dev/ hey-api@0.1.0-elmo.1 publish --build
+        run: npx --yes --registry https://npm.pkg.heyapi.dev/ hey-api@0.1.0-elmo.3 publish --build
         env:
           npm_config_//npm.pkg.heyapi.dev/:_authToken: ${{ secrets.HEY_API_PKG_TOKEN }}
 
@@ -46,6 +46,6 @@ jobs:
       - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
 
       - name: Publish to PyPI
-        run: npx --yes --registry https://npm.pkg.heyapi.dev/ hey-api@0.1.0-elmo.1 publish --destination pypi
+        run: npx --yes --registry https://npm.pkg.heyapi.dev/ hey-api@0.1.0-elmo.3 publish --destination pypi
         env:
           npm_config_//npm.pkg.heyapi.dev/:_authToken: ${{ secrets.HEY_API_PKG_TOKEN }}

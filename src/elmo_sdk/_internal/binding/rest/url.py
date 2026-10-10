@@ -60,7 +60,7 @@ def path_value(value: Any) -> str:
 def filled_url(address: str, base_url: str | None, path: dict[str, Any] | None) -> str:
     path = dumped(path)
     url = address_url(address, base_url)
-    if not path:
+    if path is None:
         return url
 
     def substitute(match: re.Match[str]) -> str:

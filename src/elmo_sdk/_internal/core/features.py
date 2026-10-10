@@ -47,6 +47,16 @@ class Feature:
     ) -> Result:
         return await send(request)
 
+    def on_open(
+        self, request: PreparedRequest, send: Send, ctx: FeatureContext
+    ) -> Result:
+        return send(request)
+
+    async def on_async_open(
+        self, request: PreparedRequest, send: AsyncSend, ctx: FeatureContext
+    ) -> Result:
+        return await send(request)
+
     def on_result(
         self, result: Result, request: PreparedRequest, ctx: FeatureContext
     ) -> Result:
@@ -114,17 +124,24 @@ def run_result(
     return result
 
 
-def _sent_through(feature: Feature, send: Send, ctx: FeatureContext) -> Send:
+def _sent_through(
+    feature: Feature, send: Send, ctx: FeatureContext, opening: bool
+) -> Send:
     def wrapped(request: PreparedRequest) -> Result:
+        if opening:
+            return feature.on_open(request, send, ctx)
         return feature.on_send(request, send, ctx)
 
     return wrapped
 
 
-def wrap_send(features: Sequence[Feature], send: Send, ctx: FeatureContext) -> Send:
+def wrap_send(
+    features: Sequence[Feature], send: Send, ctx: FeatureContext, opening: bool = False
+) -> Send:
+    hook = "on_open" if opening else "on_send"
     for feature in reversed(features):
-        if getattr(type(feature), "on_send", None) is not Feature.on_send:
-            send = _sent_through(feature, send, ctx)
+        if getattr(type(feature), hook, None) is not getattr(Feature, hook):
+            send = _sent_through(feature, send, ctx, opening)
     return send
 
 
@@ -158,20 +175,26 @@ async def run_async_result(
 
 
 def _async_sent_through(
-    feature: Feature, send: AsyncSend, ctx: FeatureContext
+    feature: Feature, send: AsyncSend, ctx: FeatureContext, opening: bool
 ) -> AsyncSend:
     async def wrapped(request: PreparedRequest) -> Result:
+        if opening:
+            return await feature.on_async_open(request, send, ctx)
         return await feature.on_async_send(request, send, ctx)
 
     return wrapped
 
 
 def wrap_async_send(
-    features: Sequence[Feature], send: AsyncSend, ctx: FeatureContext
+    features: Sequence[Feature],
+    send: AsyncSend,
+    ctx: FeatureContext,
+    opening: bool = False,
 ) -> AsyncSend:
+    hook = "on_async_open" if opening else "on_async_send"
     for feature in reversed(features):
-        if getattr(type(feature), "on_async_send", None) is not Feature.on_async_send:
-            send = _async_sent_through(feature, send, ctx)
+        if getattr(type(feature), hook, None) is not getattr(Feature, hook):
+            send = _async_sent_through(feature, send, ctx, opening)
     return send
 
 
