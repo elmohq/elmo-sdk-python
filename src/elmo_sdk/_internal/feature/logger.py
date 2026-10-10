@@ -104,6 +104,10 @@ class _CallLog:
             spelled = f"[%s] %s {text}" if text else "[%s] %s"
             self._sink.log(level, spelled, self._id, self._label, *args)
 
+    def _write_data(self, level: int, text: str, data: dict[str, Any]) -> None:
+        if self._at <= level:
+            self._sink.log(level, f"[%s] {text} %s", self._id, data)
+
     def _waited(self) -> int:
         return round((time.monotonic() - self._started) * 1000)
 
@@ -121,7 +125,11 @@ class _CallLog:
             )
         self._write(logging.INFO, "-> %s in %s ms", response.status_code, waited)
         headers = _safe_headers(response.headers, self._request.operation)
-        self._write(logging.DEBUG, "received %s in %s ms", headers, waited)
+        self._write_data(
+            logging.DEBUG,
+            "received",
+            {"headers": headers, "ms": waited, "status": response.status_code},
+        )
 
     def retrying(
         self, wait: float, retry: int, retries: int, after: Result | None = None
@@ -141,7 +149,7 @@ class _CallLog:
         self._started = time.monotonic()
         self._write(logging.INFO, "")
         headers = _safe_headers(self._request.meta, self._request.operation)
-        self._write(logging.DEBUG, "sending %s", headers)
+        self._write_data(logging.DEBUG, "sending", {"headers": headers})
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -221,6 +229,9 @@ class LoggerFeature(Feature):
         result = await send(request)
         log.replied(result.response)
         return result
+
+    on_open = on_send
+    on_async_open = on_async_send
 
     def on_error(
         self, error: BaseException, request: PreparedRequest, ctx: FeatureContext

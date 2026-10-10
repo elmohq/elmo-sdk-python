@@ -291,6 +291,9 @@ class RetryFeature(Feature):
             await asyncio.sleep(wait)
             attempt += 1
 
+    on_open = on_send
+    on_async_open = on_async_send
+
     def _declared(self, declared: RetryRules) -> _Rules:
         held = self.declared.get(id(declared))
         if held is None or held[0] is not declared:

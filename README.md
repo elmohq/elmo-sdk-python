@@ -1,6 +1,6 @@
 # Elmo Python SDK
 
-[![PyPI](https://img.shields.io/pypi/v/elmo-sdk)](https://pypi.org/project/elmo-sdk/) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE.md)
+[![PyPI](https://img.shields.io/pypi/v/elmo-sdk)](https://pypi.org/project/elmo-sdk/) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](https://github.com/elmohq/elmo-sdk-python/blob/HEAD/LICENSE.md)
 
 Read and manage the brands, prompts, competitors, and AI-visibility analytics of this deployment.
 
@@ -35,7 +35,7 @@ pdm add elmo-sdk
 
 ## Usage
 
-Set [`ELMO_API_KEY`](https://elmohq.com/docs/api#authentication) in your environment, then call the API:
+Set `ELMO_API_KEY` in your environment, then call the API:
 
 ```python
 from elmo_sdk import Elmo
@@ -127,6 +127,8 @@ To report a failure, [open an issue](https://github.com/elmohq/elmo-sdk-python/i
 
 ### Authentication
 
+Get an API key from the Elmo dashboard, under **Organization Settings → API Keys**.
+
 The client reads `ELMO_API_KEY` from the environment. To pass the value yourself, set `api_key`:
 
 ```python
@@ -135,7 +137,7 @@ from elmo_sdk import Elmo
 elmo = Elmo(api_key="elmo_…")
 ```
 
-Get `api_key` from [the page that issues it](https://elmohq.com/docs/api#authentication). `api_key` also takes a function that returns the value, such as one that reads it from a secret store. The client calls it for each request.
+`api_key` also takes a function that returns the value, such as one that reads it from a secret store. The client calls it for each request.
 
 ### Base URL
 
@@ -314,4 +316,4 @@ The API can add a field or a value after this version of the SDK is released. Th
 
 ## License
 
-MIT. See [LICENSE.md](LICENSE.md).
+MIT. See [LICENSE.md](https://github.com/elmohq/elmo-sdk-python/blob/HEAD/LICENSE.md).

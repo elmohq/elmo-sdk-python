@@ -6,12 +6,7 @@ from typing import Any, NoReturn
 from ..codec.registry import encode_named_body
 from .config import merge_configs
 from .env import read_defaults, with_implied_environment
-from .errors import (
-    UnsupportedInteractionError,
-    to_transport_error,
-    unsendable_header,
-    unsendable_timeout,
-)
+from .errors import UnsupportedInteractionError, to_transport_error, unsendable_header
 from .features import (
     Feature,
     run_async_error,
@@ -51,8 +46,8 @@ class DispatchSetup:
     env_defaults: dict[str, Any] | None = field(
         default=None, init=False, repr=False, compare=False
     )
-    merged_defaults: dict[Any, dict[str, Any]] = field(
-        default_factory=lambda: {}, init=False, repr=False, compare=False
+    merged_defaults: dict[str, Any] | None = field(
+        default=None, init=False, repr=False, compare=False
     )
 
 
@@ -77,55 +72,21 @@ def build_request_without_cookies(
     )
 
 
-def _described(
-    setup: DispatchSetup, operation: OperationDescriptor | None = None
-) -> dict[str, Any]:
-    if setup.env_defaults is None:
-        setup.env_defaults = read_defaults(setup.env, setup.credentials)
-    stated = operation.timeout if operation is not None else None
-    limit = None if stated is None else {"timeout": stated}
-    return merge_configs(setup.defaults, limit, setup.env_defaults)
-
-
-def defaults_of(
-    setup: DispatchSetup, operation: OperationDescriptor | None = None
-) -> dict[str, Any]:
-    stated = operation.timeout if operation is not None else None
-    merged = setup.merged_defaults.get(stated)
-    if merged is None:
-        merged = merge_configs(_described(setup, operation), setup.overrides)
-        setup.merged_defaults[stated] = merged
-    return merged
-
-
-def is_limit(limit: Any) -> bool:
-    if limit is None or limit is False:
-        return True
-    if isinstance(limit, (int, float)):
-        return not isinstance(limit, bool) and limit >= 0
-    return hasattr(limit, "connect") and hasattr(limit, "read")
-
-
-def operation_key(operation: OperationDescriptor) -> str:
-    method = operation.method
-    return f"{method.upper()} {operation.address}" if method else operation.address
+def defaults_of(setup: DispatchSetup) -> dict[str, Any]:
+    if setup.merged_defaults is None:
+        if setup.env_defaults is None:
+            setup.env_defaults = read_defaults(setup.env, setup.credentials)
+        setup.merged_defaults = merge_configs(
+            setup.defaults, setup.env_defaults, setup.overrides
+        )
+    return setup.merged_defaults
 
 
 def resolve_options(
-    setup: DispatchSetup,
-    options: dict[str, Any] | None,
-    operation: OperationDescriptor | None = None,
+    setup: DispatchSetup, options: dict[str, Any] | None
 ) -> dict[str, Any]:
     own = with_implied_environment(options or {}, setup.credentials)
-    resolved = merge_configs(defaults_of(setup, operation), own)
-    policy = resolved.get("timeout")
-    if callable(policy) and operation is not None:
-        handed = _described(setup, operation).get("timeout")
-        chosen = policy(operation_key(operation), handed)
-        resolved["timeout"] = handed if chosen is None else chosen
-    if not is_limit(resolved.get("timeout")):
-        raise unsendable_timeout(resolved["timeout"])
-    return resolved
+    return merge_configs(defaults_of(setup), own)
 
 
 def _built(
@@ -133,7 +94,7 @@ def _built(
 ) -> tuple[PreparedRequest, FeatureContext]:
     binding, transport = only_protocol(setup.protocols, operation.interaction)
     ctx = FeatureContext(binding=binding, transport=transport)
-    resolved = resolve_options(setup, options, operation)
+    resolved = resolve_options(setup, options)
     run_options(setup.features, resolved, operation, ctx)
     return build_request_without_cookies(setup, operation, resolved), ctx
 

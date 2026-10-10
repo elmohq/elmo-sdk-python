@@ -363,12 +363,6 @@ def unsendable(held: str) -> str:
     return f"{held} holds a line break or another character a header cannot carry, so the request was not sent."
 
 
-def unsendable_timeout(limit: Any) -> ElmoError:
-    return ElmoError(
-        f"`timeout` is {limit!r}, which is not a time limit, so the request was not sent. Pass a number of seconds, or `False` for none.",
-    )
-
-
 class UnsupportedInteractionError(ElmoError):
     def __init__(
         self, transport: str, interaction: Interaction, method: str | None = None
