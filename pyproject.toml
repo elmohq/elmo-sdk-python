@@ -39,6 +39,7 @@ http2 = [
 ]
 
 [project.urls]
+Homepage = "https://www.elmohq.com"
 Repository = "https://github.com/elmohq/elmo-sdk-python"
 Issues = "https://github.com/elmohq/elmo-sdk-python/issues"
 

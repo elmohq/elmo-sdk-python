@@ -255,8 +255,8 @@
       "files": {
         ".gitignore": "0e3713d01b398ef1152b85cca5e9af584c2477c71a4cce485207d8879ac8917e",
         "LICENSE.md": "be45cfe055e9ec284837e42e6c2aa6cc67112ad0615fe6d77cb6d0e8792d20ee",
-        "pyproject.toml": "ed18f991d7cf0378f3bb7bba1ea0ec7bf9bf289cd5d8fb6cb30d212d3bc57deb",
-        "README.md": "d9f0affb46767e52cb84cf23fb710c7453b98d6e1e89d9532280c246ec6a81d1",
+        "pyproject.toml": "ef6d7f47f793aeb1a7d4c087d0bada6f4228e9ec01eb1912de24d13a8f360e7b",
+        "README.md": "dfc8395f969e0dae27ea379cec89afc66933fabb1e0b210dd1e53dfb98203991",
         "src/elmo_sdk/__init__.py": "de90112ccab04cbf50d05f853bd97d28c09ee63fde00bcd5423da5b9c6d388df",
         "src/elmo_sdk/_internal/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "src/elmo_sdk/_internal/binding/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",

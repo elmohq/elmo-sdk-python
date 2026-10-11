@@ -1,8 +1,8 @@
 {
   "targets": {
     "python": {
-      "commit": "6783c8fb4e4515e818bc2a25023839f8b805612e",
-      "contract": "sha256:9cdf2b9073b2512ffaa0329e7724988db96e5c93a657a3e67b41cf908d9ef55e",
+      "commit": "1285e6599d1a0b856b9da3cbc1a8040dd77441c6",
+      "contract": "sha256:4fd0954d986fb1eda22ce36b6f90f4c90e105fac705d06561eae6cd82bf4af93",
       "generator": "0.0.24",
       "since": {
         "commit": "d7f167fd84ae2f3876f10b70ccddf94bfe7da19c",

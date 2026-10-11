@@ -2,11 +2,11 @@
 
 [![PyPI](https://img.shields.io/pypi/v/elmo-sdk)](https://pypi.org/project/elmo-sdk/) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](https://github.com/elmohq/elmo-sdk-python/blob/HEAD/LICENSE.md)
 
-Read and manage the brands, prompts, competitors, and AI-visibility analytics of this deployment.
+Track how AI answer engines like ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews mention and cite your brands.
 
 This package calls the Elmo API from Python, with a synchronous and an asynchronous client built on `httpx2`. It includes Pydantic models for every request and reply.
 
-[Issues](https://github.com/elmohq/elmo-sdk-python/issues)
+[Website](https://www.elmohq.com) · [Issues](https://github.com/elmohq/elmo-sdk-python/issues)
 
 ## Installation
 
