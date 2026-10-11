@@ -108,7 +108,9 @@ class RestBinding:
             and result.error is None
         ):
             return None
-        return to_api_error(response.status_code, result.error, response)
+        return to_api_error(
+            response.status_code, result.error, response, request.unauthenticated
+        )
 
     def read_result(self, raw: RawResponse, request: PreparedRequest) -> Result:
         ok = 200 <= raw.status_code < 300

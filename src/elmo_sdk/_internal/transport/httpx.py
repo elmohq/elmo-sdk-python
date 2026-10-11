@@ -169,22 +169,11 @@ PORTS: dict[str, int] = {"http": 80, "https": 443}
 
 
 def origin_of(address: str) -> Origin:
-    """The scheme, the host and the port an address is sent to. An address that
-    states no port has its scheme's own.
-    """
-
     parts = urlsplit(address)
     return (parts.scheme, parts.hostname, parts.port or PORTS.get(parts.scheme))
 
 
 def held_to(hop: Any, placed: Sequence[PlacedCredential], home: Origin) -> Any:
-    """Writes the placed credentials on a redirected request that stays at the
-    origin its call was addressed to, and takes them off one that leaves it.
-
-    The request is still sent, because a redirect to an address that needs no
-    credential, such as a signed download link, has to keep working.
-    """
-
     stays = origin_of(str(hop.url)) == home
     for entry in placed:
         credential = entry.credential
@@ -231,12 +220,6 @@ def too_many_redirects(limit: int) -> TransportError:
 def send_at_origin(
     client: HttpxLike, built: Any, request: PreparedRequest, stream: bool = False
 ) -> HttpxResponse:
-    """Sends a request, and follows each redirect itself where the call carries
-    a credential, so that the credential goes to one origin only.
-
-    A client that follows no redirect is sent through as it is.
-    """
-
     placed = request.placed
     if not placed or not getattr(client, "follow_redirects", False):
         return send_once(client, built, request, stream)
@@ -331,8 +314,6 @@ def async_send_once(
 async def async_send_at_origin(
     client: AsyncHttpxLike, built: Any, request: PreparedRequest, stream: bool = False
 ) -> AsyncHttpxResponse:
-    """`send_at_origin`, for the async client."""
-
     placed = request.placed
     if not placed or not getattr(client, "follow_redirects", False):
         return await async_send_once(client, built, request, stream)

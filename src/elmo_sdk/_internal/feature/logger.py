@@ -245,5 +245,4 @@ LogLevel = Literal["debug", "error", "info", "off", "warn"]
 """How much a client logs. `'error'` writes failed calls. `'warn'` adds a retry
 or a redirect. `'info'` adds a line per attempt, with its status and time.
 `'debug'` adds headers, with credentials hidden.
-
 """

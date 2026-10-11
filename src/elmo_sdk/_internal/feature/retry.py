@@ -77,12 +77,16 @@ def _worth_repeating(
     if response is None:
         return False
     status = response.status_code
-    if not repeatable and status not in REFUSED_STATUSES:
+    asked = response.headers.get(RETRY_HEADER)
+    invited = asked == "true" and status >= 400
+    if not repeatable and not invited and status not in REFUSED_STATUSES:
         return False
     if rules.retry_on is not None:
         return rules.retry_on(result, request)
-    if response.headers.get(RETRY_HEADER) == "false":
+    if asked == "false":
         return False
+    if invited:
+        return True
     if rules.statuses is not None:
         return status in rules.statuses
     if status >= 500:

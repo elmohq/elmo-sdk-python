@@ -17,5 +17,4 @@ MISSING: Missing = Missing()
 An argument left at this default is not sent, where `None` is sent as JSON `null`.
 Where an argument defaults to `None` instead, `None` sends the client's own
 value and `MISSING` sends nothing.
-
 """

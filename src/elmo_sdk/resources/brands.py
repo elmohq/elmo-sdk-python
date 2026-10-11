@@ -6,6 +6,7 @@ from functools import cached_property
 from typing import TYPE_CHECKING
 
 from .._internal.core.missing import MISSING
+from .._internal.core.page import async_pages, pages
 from .._internal.core.params import (
     extend_body,
     group_params,
@@ -22,7 +23,6 @@ from .._internal.core.response import (
     with_response,
 )
 from .._internal.core.types import OperationDescriptor, PaginationDescriptor
-from .._internal.page.page import async_pages, pages
 from ..client import async_client, client
 from .shared.auth import API_KEY_REQUIREMENTS
 from .shared.request_options import AsyncRequestOptions, RequestOptions
@@ -32,8 +32,8 @@ if TYPE_CHECKING:
 
     from .._internal.core.client import AsyncClient, Client
     from .._internal.core.missing import Missing
+    from .._internal.core.page import AsyncPage, Page
     from .._internal.core.types import SequenceNotStr
-    from .._internal.page.page import AsyncPage, Page
     from ..types.brands import (
         Brand,
         CreateBrandRequestCompetitorsItem,

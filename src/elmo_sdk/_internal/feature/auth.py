@@ -260,9 +260,14 @@ class AuthFeature(Feature):
         return False
 
     def _refuse(self, request: PreparedRequest) -> None:
-        if request.options.get("auth") is False or request.operation.auth_optional:
-            return
         offered = _offered(request.operation.auth or [])
+        if request.options.get("auth") is False or request.operation.auth_optional:
+
+            def unauthenticated() -> str:
+                return f"This call was sent with no credential.{_advice(offered, self.schemes)}"
+
+            request.unauthenticated = unauthenticated
+            return
         raise MissingCredentialError(
             f"This call needs a credential that was not set.{_advice(offered, self.schemes)}",
             _keys_of(offered),

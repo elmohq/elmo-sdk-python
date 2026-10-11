@@ -8,9 +8,9 @@ from urllib.parse import urljoin, urlsplit
 
 from typing_extensions import TypeVar
 
-from ..core.errors import ElmoError
-from ..core.response import as_it_arrived, read_reply
-from ..core.types import OperationDescriptor, PaginationDescriptor
+from .errors import ElmoError
+from .response import as_it_arrived, read_reply
+from .types import OperationDescriptor, PaginationDescriptor
 
 TItem = TypeVar("TItem")
 
@@ -231,7 +231,6 @@ def _load_page(
 class Page(Generic[TItem]):
     """One page of a paginated call. Iterating a page walks from it to the end of
     the collection.
-
     """
 
     __slots__ = (
@@ -402,7 +401,6 @@ async def _load_async_page(
 class AsyncPage(Generic[TItem]):
     """One page of a paginated call, read with `await`. Iterating a page walks
     from it to the end of the collection.
-
     """
 
     __slots__ = (

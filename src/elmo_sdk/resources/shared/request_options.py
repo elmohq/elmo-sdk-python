@@ -72,7 +72,7 @@ class _BaseRequestOptions(TypedDict, total=False):
     one call. It is given the operation as `METHOD /path` and the limit the
     call would otherwise get.
 
-    Defaults to `NaN`.
+    Defaults to `60`.
 
     The unit is seconds.
     """

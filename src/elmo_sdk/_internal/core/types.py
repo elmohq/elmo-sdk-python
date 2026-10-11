@@ -54,7 +54,6 @@ class AuthScheme:
     type: str
     """`apiKey` sends the credential as it is, where `location` and `name` say.
     `http` sends it in the `Authorization` header, written as `scheme` says.
-
     """
     location: str = "header"
     """Where the credential is sent: `header`, `query` or `cookie`."""
@@ -65,7 +64,6 @@ class AuthScheme:
     scheme: str | None = None
     """How an `http` credential is written in the `Authorization` header: `basic` or
     `bearer`.
-
     """
 
 
@@ -112,12 +110,10 @@ class RetryRules(TypedDict, total=False):
     attempt with the waits included. A retry that would start past it is not
     sent, and the last reply or error stands. An attempt that is running is not
     cut short: `timeout` limits each one. No limit by default.
-
     """
     delay: float
     """The first wait, in seconds, doubled for each attempt after it. Half a
     second by default.
-
     """
     jitter: Jitter
     """The share of each wait that is random. `"full"` by default."""
@@ -126,30 +122,26 @@ class RetryRules(TypedDict, total=False):
     max_retries: int
     """How many times a failed call is sent again, after the first attempt. Two
     by default.
-
     """
     max_retry_after: float
     """The longest wait the API may ask for, in seconds. Past it, the call gives
-    up and hands back the reply as it is. Sixty by default.
-
+    up and returns the reply as it is. Sixty by default.
     """
     methods: Sequence[str]
     """Methods that may be sent again. A request that never reached the API, a
     call carrying its API's idempotency key, and 408, 425 and 429 are sent again
     whatever this says. The idempotent methods by default.
-
     """
     retry_after: Sequence[RetryAfterHeader] | bool
     """Headers the API may name its own wait in, read before the backoff
     applies. `False` reads none.
-
     """
     retry_on_timeout: bool
     """Send the request again when an attempt runs past its deadline. Off by default."""
     statuses: Sequence[int]
-    """Statuses worth another attempt. A reply with `x-should-retry: false` is
-    never retried.
-
+    """Statuses worth another attempt. The API overrules them with
+    `x-should-retry`: a reply answering `false` is never retried, and a
+    failure answering `true` is, whatever its status and method.
     """
     strategy: Literal["constant", "exponential"]
     """Whether each wait doubles, or stays at `delay`. `"exponential"` by default."""
@@ -224,6 +216,7 @@ class PreparedRequest:
     """Where this call writes its log records. Unset where the client does not log."""
     placed: Sequence[PlacedCredential] | None = None
     """Each credential put on the request, with the scheme it answers."""
+    unauthenticated: Callable[[], str] | None = None
 
 
 AsyncSend = Callable[[PreparedRequest], Awaitable[Result]]
@@ -301,7 +294,6 @@ class StreamResponse(Protocol):
 AuthToken = str | None
 """A credential as a string, before it is written into the request. `None` sends
 none.
-
 """
 
 
@@ -313,29 +305,26 @@ class RetryOptions(RetryRules, total=False):
     API's retry headers and the backoff. `None` keeps the usual wait. After a
     failure that got no reply, the result holds only the `error`.
     `max_retry_after` does not limit what this returns.
-
     """
     retry_on: Callable[[Result, PreparedRequest], bool]
     """Whether to retry, in place of `statuses`, `x-should-retry` and
     `retry_on_timeout`. After a failure that got no reply, the result holds
     only the `error`. A call the API may have acted on is never asked about: a
-    method outside `methods` is sent again only after 408, 425 or 429, or when
-    the request never reached the API.
-
+    method outside `methods` is sent again only after 408, 425 or 429, after
+    a failure that answers `x-should-retry: true`, or when the request never
+    reached the API.
     """
 
 
 RetryValue = RetryOptions | bool
 """How a failed call is retried: the rules, `True` for the client's own, or
 `False` to send it once.
-
 """
 
 
 TimeoutPolicy = Callable[[str, CallTimeout | None], CallTimeout | None]
 """Chooses the limit of one call, given the operation as `METHOD /path` and the
 limit it would otherwise get. `None` keeps that limit.
-
 """
 
 
@@ -350,7 +339,6 @@ CredentialValue = str | Callable[[], AuthToken]
 AuthResolver = Callable[[AuthScheme, AuthToken], AuthToken]
 """Returns the credential to send for `scheme`, given the value its option
 holds. `None` sends none for that scheme.
-
 """
 
 
@@ -382,14 +370,12 @@ class SequenceNotStr(Protocol[TItem_co]):
 AsyncCredentialValue = str | Callable[[], AuthToken | Awaitable[AuthToken]]
 """A credential, or a function that returns one when a call needs it. The function
 may be async.
-
 """
 
 
 AsyncAuthResolver = Callable[[AuthScheme, AuthToken], AuthToken | Awaitable[AuthToken]]
 """Returns the credential to send for `scheme`, given the value its option
 holds. `None` sends none for that scheme.
-
 """
 
 

@@ -36,6 +36,7 @@ ANALYZE_BRAND_DESCRIPTOR = OperationDescriptor(
     interaction="unary",
     media_type="application/json",
     method="post",
+    timeout=600,
 )
 
 

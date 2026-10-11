@@ -15,20 +15,11 @@ class ClientBase:
     def prepare(
         self, operation: OperationDescriptor, options: dict[str, Any] | None = None
     ) -> PreparedRequest:
-        """The request a call would send, built but not sent.
-
-        Awaits nothing, so a credential function or `auth` that returns an
-        awaitable raises `TypeError` here.
-
-        """
-
         return prepare(self.setup, operation, options)
 
     def resolve_address(
         self, operation: OperationDescriptor, options: dict[str, Any] | None = None
     ) -> Any:
-        """The address a call would go to, without sending anything."""
-
         binding, _ = only_protocol(self.setup.protocols, operation.interaction)
         return binding.resolve_address(operation, resolve_options(self.setup, options))
 

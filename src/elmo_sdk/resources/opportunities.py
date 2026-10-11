@@ -31,6 +31,7 @@ GET_BRAND_OPPORTUNITIES_DESCRIPTOR = OperationDescriptor(
     auth=API_KEY_REQUIREMENTS,
     interaction="unary",
     method="get",
+    timeout=600,
 )
 
 

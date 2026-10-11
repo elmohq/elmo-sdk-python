@@ -39,7 +39,7 @@ REQUEST_ID_FALLBACKS: list[str] = ["x-correlation-id", "cf-ray"]
 REQUEST_ID_NAME = re.compile(r"(?:^|-)request-?id$")
 
 
-def request_id_of(response: Any) -> str | None:
+def sniff_request_id(response: Any) -> str | None:
     meta: Mapping[str, str] = getattr(response, "headers", None) or {}
     for name, named in meta.items():
         if named and REQUEST_ID_NAME.search(name.lower()):
@@ -61,7 +61,7 @@ class DecodeError(ElmoError):
         response: RawResponse | None = None,
         value: Any = None,
     ) -> None:
-        request_id = request_id_of(response)
+        request_id = sniff_request_id(response)
         super().__init__(
             f'{message} The request id is "{request_id}".' if request_id else message
         )
@@ -143,7 +143,7 @@ def _shorten(text: str) -> str:
     cut = line[:MAX_MESSAGE_BODY]
     space = cut.rfind(" ")
     kept = cut[:space] if space > MAX_MESSAGE_BODY // 2 else cut
-    return f"{kept.rstrip()}…"
+    return f"{kept.rstrip()}..."
 
 
 def describe_stated_failure(body: Any) -> str | None:
@@ -226,7 +226,7 @@ class APIError(ElmoError, Generic[TBody_co]):
         reason = getattr(response, "reason_phrase", "") or ""
         stated = f"{status} {reason}" if reason else f"{status}"
         url = getattr(response, "url", "") or ""
-        request_id = request_id_of(response)
+        request_id = sniff_request_id(response)
         where = f' for "{safe_address(url)}"' if url else ""
         if request_id:
             where += f' (request id "{request_id}")'
@@ -250,7 +250,6 @@ class APIError(ElmoError, Generic[TBody_co]):
         """The failure body, read as the model the API description gives its status.
         `None` where it gives none, or where the body does not match, which `body`
         still holds.
-
         """
         self.headers: dict[str, str] = dict(getattr(response, "headers", None) or {})
         self.request_id: str | None = request_id
@@ -363,6 +362,12 @@ def unsendable(held: str) -> str:
     return f"{held} holds a line break or another character a header cannot carry, so the request was not sent."
 
 
+def unsendable_timeout(limit: Any) -> ElmoError:
+    return ElmoError(
+        f"`timeout` is {limit!r}, which is not a time limit, so the request was not sent. Pass a number of seconds, or `False` for none.",
+    )
+
+
 class UnsupportedInteractionError(ElmoError):
     def __init__(
         self, transport: str, interaction: Interaction, method: str | None = None
@@ -432,6 +437,24 @@ def to_transport_error(
 
 def unsendable_header(name: str) -> ElmoError:
     return ElmoError(unsendable(f"Header `{name}`"))
+
+
+def undeclared_body(response: RawResponse, value: Any) -> DecodeError:
+    url = getattr(response, "url", "") or ""
+    where = f' for "{safe_address(url)}"' if url else ""
+    headers: Mapping[str, str] = getattr(response, "headers", None) or {}
+    content_type = headers.get("content-type")
+    said = f' Its content type said "{content_type}".' if content_type else ""
+    got = (
+        "no JSON object or list, where the API description declares one."
+        if value is None
+        else f"a body that is not the JSON object or list the API description declares.{said}"
+    )
+    return DecodeError(
+        f"The API answered {response.status_code}{where} with {got}",
+        response=response,
+        value=value,
+    )
 
 
 def unreadable_value(

@@ -1,9 +1,6 @@
 name: Publish
 
 on:
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:
@@ -11,27 +8,7 @@ permissions:
   id-token: write
 
 jobs:
-  build:
-    if: github.event_name == 'pull_request'
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: '24'
-
-      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
-
-      - name: Build the package
-        run: npx --yes --registry https://npm.pkg.heyapi.dev/ hey-api@0.1.0-elmo.3 publish --build
-        env:
-          npm_config_//npm.pkg.heyapi.dev/:_authToken: ${{ secrets.HEY_API_PKG_TOKEN }}
-
   pypi:
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
       name: pypi
@@ -46,6 +23,27 @@ jobs:
       - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
 
       - name: Publish to PyPI
-        run: npx --yes --registry https://npm.pkg.heyapi.dev/ hey-api@0.1.0-elmo.3 publish --destination pypi
+        run: npx --yes --registry https://npm.pkg.heyapi.dev/ hey-api@0.1.0-elmo.4 publish --destination pypi
         env:
           npm_config_//npm.pkg.heyapi.dev/:_authToken: ${{ secrets.HEY_API_PKG_TOKEN }}
+
+  release:
+    if: github.event_name == 'workflow_dispatch' && !endsWith(github.actor, '[bot]')
+    needs:
+      - pypi
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create the GitHub Release v0.1.1
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+          TAG: v0.1.1
+        run: |
+          if gh release view "$TAG" > /dev/null 2>&1; then exit 0; fi
+          gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes-file - <<'NOTES'
+          Published to PyPI as [elmo-sdk 0.1.1](https://pypi.org/project/elmo-sdk/0.1.1/).
+
+          <sub>Generated from [elmohq/elmo@6783c8f](https://github.com/elmohq/elmo/commit/6783c8fb4e4515e818bc2a25023839f8b805612e)</sub>
+          NOTES

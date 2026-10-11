@@ -1,7 +1,7 @@
 {
   "targets": {
     "python": {
-      "commit": "68af243f2a50508e00ffe97c2b19894688e7c7d7",
+      "commit": "6783c8fb4e4515e818bc2a25023839f8b805612e",
       "contract": "sha256:9cdf2b9073b2512ffaa0329e7724988db96e5c93a657a3e67b41cf908d9ef55e",
       "generator": "0.0.24",
       "since": {

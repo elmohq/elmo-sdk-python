@@ -26,6 +26,7 @@ if TYPE_CHECKING:
         TransportTimeoutError,
     )
     from ._internal.core.missing import MISSING, Missing
+    from ._internal.core.page import AsyncPage, Page
     from ._internal.core.response import Response
     from ._internal.core.types import (
         AsyncAuthResolver,
@@ -53,7 +54,6 @@ if TYPE_CHECKING:
         ResponseHook,
     )
     from ._internal.feature.logger import LogLevel
-    from ._internal.page.page import AsyncPage, Page
     from ._internal.transport.httpx import AsyncHttpxLike, HttpxLike
     from .client import AsyncElmo, Elmo, __version__
     from .resources.shared.request_options import AsyncRequestOptions, RequestOptions
@@ -121,7 +121,7 @@ _LAZY_EXPORTS = {
     "AsyncCredentialValue": ("._internal.core.types", "AsyncCredentialValue"),
     "AsyncElmo": (".client", "AsyncElmo"),
     "AsyncHttpxLike": ("._internal.transport.httpx", "AsyncHttpxLike"),
-    "AsyncPage": ("._internal.page.page", "AsyncPage"),
+    "AsyncPage": ("._internal.core.page", "AsyncPage"),
     "AsyncRequestOptions": (".resources.shared.request_options", "AsyncRequestOptions"),
     "AuthResolver": ("._internal.core.types", "AuthResolver"),
     "AuthScheme": ("._internal.core.types", "AuthScheme"),
@@ -146,7 +146,7 @@ _LAZY_EXPORTS = {
     "Missing": ("._internal.core.missing", "Missing"),
     "MissingCredentialError": ("._internal.core.errors", "MissingCredentialError"),
     "NotFoundError": ("._internal.binding.rest.errors", "NotFoundError"),
-    "Page": ("._internal.page.page", "Page"),
+    "Page": ("._internal.core.page", "Page"),
     "PaymentRequiredError": ("._internal.binding.rest.errors", "PaymentRequiredError"),
     "PermissionDeniedError": (
         "._internal.binding.rest.errors",

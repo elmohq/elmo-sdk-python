@@ -8,7 +8,13 @@ from typing import Any, Generic, cast
 
 from typing_extensions import ParamSpec, TypeVar
 
-from .errors import ElmoError, range_key, request_id_of, unreadable_value
+from .errors import (
+    ElmoError,
+    range_key,
+    sniff_request_id,
+    undeclared_body,
+    unreadable_value,
+)
 from .types import OperationDescriptor
 
 T = TypeVar("T")
@@ -36,7 +42,12 @@ class Response(Generic[T]):
 _wants_response: ContextVar[bool] = ContextVar("hey_api_wants_response", default=False)
 
 
-def read_reply(read: Callable[[Any], T], payload: Any, response: Any = None) -> T:
+CONTAINERS = ("dict_type", "list_type", "model_type")
+
+
+def read_reply(
+    read: Callable[[Any], T], payload: Any, response: Any = None, whole: bool = False
+) -> T:
     try:
         return read(payload)
     except ElmoError:
@@ -51,6 +62,8 @@ def read_reply(read: Callable[[Any], T], payload: Any, response: Any = None) -> 
         if not issues:
             raise unreadable_value(at, payload, response) from error
         first = issues[0]
+        if whole and not first.get("loc") and first.get("type") in CONTAINERS:
+            raise undeclared_body(response, payload) from error
         for part in first.get("loc", ()):
             if isinstance(part, int):
                 at = f"{at or ''}[{part}]"
@@ -90,7 +103,7 @@ def reader_for(read: Read[T], response: Any) -> Callable[[Any], T]:
 
 def _answer(read: Read[T], exchange: Any) -> T:
     response = exchange.response
-    data = read_reply(reader_for(read, response), exchange.data, response)
+    data = read_reply(reader_for(read, response), exchange.data, response, True)
     if not _wants_response.get():
         return data
     status: int = getattr(response, "status_code", 0)
@@ -98,7 +111,7 @@ def _answer(read: Read[T], exchange: Any) -> T:
         "T",
         Response(
             data=data,
-            request_id=request_id_of(response),
+            request_id=sniff_request_id(response),
             response=response,
             status=status,
         ),

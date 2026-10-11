@@ -46,6 +46,7 @@ from ._internal.feature.auth import AuthFeature
 from ._internal.feature.interceptors import InterceptorsFeature
 from ._internal.feature.logger import LoggerFeature
 from ._internal.feature.retry import RetryFeature
+from ._internal.feature.timeout import TimeoutFeature
 from ._internal.transport.httpx import (
     AsyncHttpxTransport,
     HttpxTransport,
@@ -123,13 +124,14 @@ def _create_setup(transport: HttpxTransport | AsyncHttpxTransport) -> DispatchSe
         codecs=[json_codec],
         credentials=DECLARED_CREDENTIALS,
         defaults=create_config(
-            base_url="/api/v1",
+            base_url="https://app.elmohq.com/api/v1",
             headers={"user-agent": f"elmo-sdk/{__version__} (python)"},
         ),
         env={"base_url": "ELMO_BASE_URL", "log_level": "ELMO_LOG"},
         features=[
             AuthFeature(DECLARED_CREDENTIALS),
             RetryFeature(),
+            TimeoutFeature(),
             LoggerFeature(),
             InterceptorsFeature(),
         ],
@@ -221,7 +223,7 @@ class Elmo:
         Args:
             api_key: An instance admin key from `ADMIN_API_KEYS`, or an organization key (`elmo_…`) issued from the dashboard. Its value starts with `elmo_`. Read from the `ELMO_API_KEY` environment variable when unset.
             auth: Decides each credential a call sends, given the scheme and the value its option holds. What it returns is sent, so return the value to keep it. `False` sends no credential.
-            base_url: Override the base URL calls are sent to. Read from the `ELMO_BASE_URL` environment variable when unset. Defaults to `"/api/v1"`.
+            base_url: Override the base URL calls are sent to. Read from the `ELMO_BASE_URL` environment variable when unset. Defaults to `"https://app.elmohq.com/api/v1"`.
             client: A client to dispatch through, in place of one built from options. For sharing one configured client across several SDKs.
             default_headers: Headers to send with every call. Merged per name with whatever a call sets, and `None` drops one.
             default_path: Path parameters every call starts from. Merged per name with whatever a call sets.
@@ -232,7 +234,7 @@ class Elmo:
             logger: Set the logger. This SDK's own `logging.Logger` by default, which writes to standard error unless the application has given it a handler of its own.
             max_retries: The maximum number of times a failed call is sent again. The same count as `retry["max_retries"]`, which wins where both are set. It counts retries and nothing else: `retry` decides which failures are retried. Defaults to `2`.
             retry: How a failed call is retried, or `False` to send it once. Defaults to `{"max_retries": 2}`.
-            timeout: The maximum time one attempt may run. Set `False` or `0` for no limit, or a function that returns the limit of one call. It is given the operation as `METHOD /path` and the limit the call would otherwise get. Defaults to `NaN`. The unit is seconds.
+            timeout: The maximum time one attempt may run. Set `False` or `0` for no limit, or a function that returns the limit of one call. It is given the operation as `METHOD /path` and the limit the call would otherwise get. Defaults to `60`. The unit is seconds.
         """
 
         self._transport = own_transport(transport, http_client, client.setup)
@@ -282,7 +284,7 @@ class Elmo:
         Args:
             api_key: An instance admin key from `ADMIN_API_KEYS`, or an organization key (`elmo_…`) issued from the dashboard. Its value starts with `elmo_`. Read from the `ELMO_API_KEY` environment variable when unset.
             auth: Decides each credential a call sends, given the scheme and the value its option holds. What it returns is sent, so return the value to keep it. `False` sends no credential.
-            base_url: Override the base URL calls are sent to. Read from the `ELMO_BASE_URL` environment variable when unset. Defaults to `"/api/v1"`.
+            base_url: Override the base URL calls are sent to. Read from the `ELMO_BASE_URL` environment variable when unset. Defaults to `"https://app.elmohq.com/api/v1"`.
             default_headers: Headers to send with every call. Merged per name with whatever a call sets, and `None` drops one.
             default_path: Path parameters every call starts from. Merged per name with whatever a call sets.
             default_query: Query parameters to add to every call. Merged per name with whatever a call sets, and `None` drops one.
@@ -291,7 +293,7 @@ class Elmo:
             logger: Set the logger. This SDK's own `logging.Logger` by default, which writes to standard error unless the application has given it a handler of its own.
             max_retries: The maximum number of times a failed call is sent again. The same count as `retry["max_retries"]`, which wins where both are set. It counts retries and nothing else: `retry` decides which failures are retried. Defaults to `2`.
             retry: How a failed call is retried, or `False` to send it once. Defaults to `{"max_retries": 2}`.
-            timeout: The maximum time one attempt may run. Set `False` or `0` for no limit, or a function that returns the limit of one call. It is given the operation as `METHOD /path` and the limit the call would otherwise get. Defaults to `NaN`. The unit is seconds.
+            timeout: The maximum time one attempt may run. Set `False` or `0` for no limit, or a function that returns the limit of one call. It is given the operation as `METHOD /path` and the limit the call would otherwise get. Defaults to `60`. The unit is seconds.
         """
 
         derived = object.__new__(type(self))
@@ -523,7 +525,7 @@ class AsyncElmo:
         Args:
             api_key: An instance admin key from `ADMIN_API_KEYS`, or an organization key (`elmo_…`) issued from the dashboard. Its value starts with `elmo_`. Read from the `ELMO_API_KEY` environment variable when unset.
             auth: Decides each credential a call sends, given the scheme and the value its option holds. What it returns is sent, so return the value to keep it. `False` sends no credential.
-            base_url: Override the base URL calls are sent to. Read from the `ELMO_BASE_URL` environment variable when unset. Defaults to `"/api/v1"`.
+            base_url: Override the base URL calls are sent to. Read from the `ELMO_BASE_URL` environment variable when unset. Defaults to `"https://app.elmohq.com/api/v1"`.
             client: A client to dispatch through, in place of one built from options. For sharing one configured client across several SDKs.
             default_headers: Headers to send with every call. Merged per name with whatever a call sets, and `None` drops one.
             default_path: Path parameters every call starts from. Merged per name with whatever a call sets.
@@ -534,7 +536,7 @@ class AsyncElmo:
             logger: Set the logger. This SDK's own `logging.Logger` by default, which writes to standard error unless the application has given it a handler of its own.
             max_retries: The maximum number of times a failed call is sent again. The same count as `retry["max_retries"]`, which wins where both are set. It counts retries and nothing else: `retry` decides which failures are retried. Defaults to `2`.
             retry: How a failed call is retried, or `False` to send it once. Defaults to `{"max_retries": 2}`.
-            timeout: The maximum time one attempt may run. Set `False` or `0` for no limit, or a function that returns the limit of one call. It is given the operation as `METHOD /path` and the limit the call would otherwise get. Defaults to `NaN`. The unit is seconds.
+            timeout: The maximum time one attempt may run. Set `False` or `0` for no limit, or a function that returns the limit of one call. It is given the operation as `METHOD /path` and the limit the call would otherwise get. Defaults to `60`. The unit is seconds.
         """
 
         self._transport = own_transport(async_transport, http_client, client.setup)
@@ -584,7 +586,7 @@ class AsyncElmo:
         Args:
             api_key: An instance admin key from `ADMIN_API_KEYS`, or an organization key (`elmo_…`) issued from the dashboard. Its value starts with `elmo_`. Read from the `ELMO_API_KEY` environment variable when unset.
             auth: Decides each credential a call sends, given the scheme and the value its option holds. What it returns is sent, so return the value to keep it. `False` sends no credential.
-            base_url: Override the base URL calls are sent to. Read from the `ELMO_BASE_URL` environment variable when unset. Defaults to `"/api/v1"`.
+            base_url: Override the base URL calls are sent to. Read from the `ELMO_BASE_URL` environment variable when unset. Defaults to `"https://app.elmohq.com/api/v1"`.
             default_headers: Headers to send with every call. Merged per name with whatever a call sets, and `None` drops one.
             default_path: Path parameters every call starts from. Merged per name with whatever a call sets.
             default_query: Query parameters to add to every call. Merged per name with whatever a call sets, and `None` drops one.
@@ -593,7 +595,7 @@ class AsyncElmo:
             logger: Set the logger. This SDK's own `logging.Logger` by default, which writes to standard error unless the application has given it a handler of its own.
             max_retries: The maximum number of times a failed call is sent again. The same count as `retry["max_retries"]`, which wins where both are set. It counts retries and nothing else: `retry` decides which failures are retried. Defaults to `2`.
             retry: How a failed call is retried, or `False` to send it once. Defaults to `{"max_retries": 2}`.
-            timeout: The maximum time one attempt may run. Set `False` or `0` for no limit, or a function that returns the limit of one call. It is given the operation as `METHOD /path` and the limit the call would otherwise get. Defaults to `NaN`. The unit is seconds.
+            timeout: The maximum time one attempt may run. Set `False` or `0` for no limit, or a function that returns the limit of one call. It is given the operation as `METHOD /path` and the limit the call would otherwise get. Defaults to `60`. The unit is seconds.
         """
 
         derived = object.__new__(type(self))

@@ -16,7 +16,6 @@ come back at once.
 A number from 0 to 1 is the random share: `0.25` waits between three quarters
 of the computed wait and all of it. `full` is 1, `equal` is 0.5 and `none` is
 0. `True` is `full` and `False` is `none`.
-
 """
 
 

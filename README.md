@@ -86,7 +86,7 @@ for item in elmo.brands.list():
 
 ## Errors
 
-When the API answers with an error status, the call raises `APIError`, or a subclass named for the status. `data` holds the body as the model its status declares, where there is one. `request_id` holds the id to quote when you report a failure. Every exception a call raises subclasses `ElmoError`.
+When the API answers with an error status, the call raises `APIError`, or a subclass named for the status. `data` holds the body as the model its status declares, where there is one. Every exception a call raises subclasses `ElmoError`.
 
 ```python
 from elmo_sdk import APIError, Elmo
@@ -95,7 +95,7 @@ elmo = Elmo()
 try:
     elmo.brands.list()
 except APIError as error:
-    print(error.status, error.request_id, error.data)
+    print(error.status, error.data)
 ```
 
 An argument the call refuses raises `ElmoError` itself, before anything is sent, with pydantic's error as its `__cause__`. A model you build yourself raises `pydantic.ValidationError`, as any pydantic model does.
@@ -121,7 +121,7 @@ A call made with no credential raises `MissingCredentialError` before anything i
 
 By the time a call raises `RateLimitError`, the client has sent it again up to 2 times. `retry_after_seconds` on `RateLimitError` holds how long the API asked to wait, in seconds, where it said.
 
-To report a failure, [open an issue](https://github.com/elmohq/elmo-sdk-python/issues) and quote `request_id`.
+To report a failure, [open an issue](https://github.com/elmohq/elmo-sdk-python/issues).
 
 ## Configuration
 
@@ -141,7 +141,7 @@ elmo = Elmo(api_key="elmo_…")
 
 ### Base URL
 
-Calls go to `/api/v1`. To send them elsewhere, such as a proxy or a gateway, set `base_url`, or the `ELMO_BASE_URL` environment variable:
+Calls go to `https://app.elmohq.com/api/v1`. To send them elsewhere, such as a proxy or a gateway, set `base_url`, or the `ELMO_BASE_URL` environment variable:
 
 ```python
 from elmo_sdk import Elmo
@@ -224,7 +224,7 @@ elmo = Elmo(retry={"delay": 1, "max_delay": 10})
 
 ### Timeouts
 
-Each attempt may run for NaN seconds. One that runs longer raises `TransportTimeoutError`. To change the limit, set `timeout` in seconds on the client or on one call. `False` removes it:
+Each attempt may run for 60 seconds. One that runs longer raises `TransportTimeoutError`. Some operations allow longer, and a `timeout` you set applies to them too. To change the limit, set `timeout` in seconds on the client or on one call. `False` removes it:
 
 ```python
 from elmo_sdk import Elmo
@@ -285,7 +285,6 @@ To read the HTTP response as well, make the call through `with_response`. What c
 
 - `data`: what the call returns on its own
 - `status`: the status it arrived with
-- `request_id`: the id to quote when you report a problem
 - `response`: the `httpx2.Response` itself, for a header or a field the SDK does not model
 
 ```python
@@ -300,11 +299,11 @@ print(reply.status, reply.response.headers)
 
 The client reads each variable when its option is not set:
 
-| Variable        | Option      | Default     |
-| --------------- | ----------- | ----------- |
-| `ELMO_API_KEY`  | `api_key`   |             |
-| `ELMO_BASE_URL` | `base_url`  | `"/api/v1"` |
-| `ELMO_LOG`      | `log_level` | `"off"`     |
+| Variable        | Option      | Default                           |
+| --------------- | ----------- | --------------------------------- |
+| `ELMO_API_KEY`  | `api_key`   |                                   |
+| `ELMO_BASE_URL` | `base_url`  | `"https://app.elmohq.com/api/v1"` |
+| `ELMO_LOG`      | `log_level` | `"off"`                           |
 
 ### Forward compatibility
 
@@ -316,4 +315,4 @@ The API can add a field or a value after this version of the SDK is released. Th
 
 ## License
 
-MIT. See [LICENSE.md](https://github.com/elmohq/elmo-sdk-python/blob/HEAD/LICENSE.md).
+[MIT](https://github.com/elmohq/elmo-sdk-python/blob/HEAD/LICENSE.md)
