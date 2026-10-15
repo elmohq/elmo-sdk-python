@@ -103,8 +103,8 @@ class Analytics:
 
         Args:
             brand_id: Brand identifier.
-            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
-            end: Exclusive upper bound of the window, an ISO 8601 timestamp. The window is half-open: a run at exactly `end` is outside it.
+            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. Aligned down to the quarter hour, the grain analytics are aggregated at; where a response repeats the window, it repeats the aligned one. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
+            end: Exclusive upper bound of the window, an ISO 8601 timestamp, also aligned down to the quarter hour. The window is half-open: a run at exactly `end` is outside it. `start` and `end` inside one quarter-hour bucket leave an empty window and are rejected.
             model: Restrict to one model, e.g. `chatgpt`. See `models.list()`.
             tags: Comma-separated prompt tags. Only prompts carrying at least one of them are counted.
             **options: What one call may set for itself, overriding the client it goes through.
@@ -176,8 +176,8 @@ class Domains:
 
         Args:
             brand_id: Brand identifier.
-            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
-            end: Exclusive upper bound of the window, an ISO 8601 timestamp. The window is half-open: a run at exactly `end` is outside it.
+            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. Aligned down to the quarter hour, the grain analytics are aggregated at; where a response repeats the window, it repeats the aligned one. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
+            end: Exclusive upper bound of the window, an ISO 8601 timestamp, also aligned down to the quarter hour. The window is half-open: a run at exactly `end` is outside it. `start` and `end` inside one quarter-hour bucket leave an empty window and are rejected.
             model: Restrict to one model, e.g. `chatgpt`. See `models.list()`.
             tags: Comma-separated prompt tags. Only prompts carrying at least one of them are counted.
             **options: What one call may set for itself, overriding the client it goes through.
@@ -248,8 +248,8 @@ class URLs:
 
         Args:
             brand_id: Brand identifier.
-            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
-            end: Exclusive upper bound of the window, an ISO 8601 timestamp. The window is half-open: a run at exactly `end` is outside it.
+            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. Aligned down to the quarter hour, the grain analytics are aggregated at; where a response repeats the window, it repeats the aligned one. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
+            end: Exclusive upper bound of the window, an ISO 8601 timestamp, also aligned down to the quarter hour. The window is half-open: a run at exactly `end` is outside it. `start` and `end` inside one quarter-hour bucket leave an empty window and are rejected.
             model: Restrict to one model, e.g. `chatgpt`. See `models.list()`.
             tags: Comma-separated prompt tags. Only prompts carrying at least one of them are counted.
             **options: What one call may set for itself, overriding the client it goes through.
@@ -365,8 +365,8 @@ class PromptPerformance:
 
         Args:
             brand_id: Brand identifier.
-            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
-            end: Exclusive upper bound of the window, an ISO 8601 timestamp. The window is half-open: a run at exactly `end` is outside it.
+            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. Aligned down to the quarter hour, the grain analytics are aggregated at; where a response repeats the window, it repeats the aligned one. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
+            end: Exclusive upper bound of the window, an ISO 8601 timestamp, also aligned down to the quarter hour. The window is half-open: a run at exactly `end` is outside it. `start` and `end` inside one quarter-hour bucket leave an empty window and are rejected.
             model: Restrict to one model, e.g. `chatgpt`. See `models.list()`.
             tags: Comma-separated prompt tags. Only prompts carrying at least one of them are counted.
             **options: What one call may set for itself, overriding the client it goes through.
@@ -439,8 +439,8 @@ class QueryFanout:
 
         Args:
             brand_id: Brand identifier.
-            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
-            end: Exclusive upper bound of the window, an ISO 8601 timestamp. The window is half-open: a run at exactly `end` is outside it.
+            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. Aligned down to the quarter hour, the grain analytics are aggregated at; where a response repeats the window, it repeats the aligned one. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
+            end: Exclusive upper bound of the window, an ISO 8601 timestamp, also aligned down to the quarter hour. The window is half-open: a run at exactly `end` is outside it. `start` and `end` inside one quarter-hour bucket leave an empty window and are rejected.
             model: Restrict to one model, e.g. `chatgpt`. See `models.list()`.
             tags: Comma-separated prompt tags. Only prompts carrying at least one of them are counted.
             **options: What one call may set for itself, overriding the client it goes through.
@@ -515,8 +515,8 @@ class AsyncAnalytics:
 
         Args:
             brand_id: Brand identifier.
-            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
-            end: Exclusive upper bound of the window, an ISO 8601 timestamp. The window is half-open: a run at exactly `end` is outside it.
+            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. Aligned down to the quarter hour, the grain analytics are aggregated at; where a response repeats the window, it repeats the aligned one. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
+            end: Exclusive upper bound of the window, an ISO 8601 timestamp, also aligned down to the quarter hour. The window is half-open: a run at exactly `end` is outside it. `start` and `end` inside one quarter-hour bucket leave an empty window and are rejected.
             model: Restrict to one model, e.g. `chatgpt`. See `models.list()`.
             tags: Comma-separated prompt tags. Only prompts carrying at least one of them are counted.
             **options: What one call may set for itself, overriding the client it goes through.
@@ -588,8 +588,8 @@ class AsyncDomains:
 
         Args:
             brand_id: Brand identifier.
-            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
-            end: Exclusive upper bound of the window, an ISO 8601 timestamp. The window is half-open: a run at exactly `end` is outside it.
+            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. Aligned down to the quarter hour, the grain analytics are aggregated at; where a response repeats the window, it repeats the aligned one. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
+            end: Exclusive upper bound of the window, an ISO 8601 timestamp, also aligned down to the quarter hour. The window is half-open: a run at exactly `end` is outside it. `start` and `end` inside one quarter-hour bucket leave an empty window and are rejected.
             model: Restrict to one model, e.g. `chatgpt`. See `models.list()`.
             tags: Comma-separated prompt tags. Only prompts carrying at least one of them are counted.
             **options: What one call may set for itself, overriding the client it goes through.
@@ -660,8 +660,8 @@ class AsyncURLs:
 
         Args:
             brand_id: Brand identifier.
-            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
-            end: Exclusive upper bound of the window, an ISO 8601 timestamp. The window is half-open: a run at exactly `end` is outside it.
+            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. Aligned down to the quarter hour, the grain analytics are aggregated at; where a response repeats the window, it repeats the aligned one. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
+            end: Exclusive upper bound of the window, an ISO 8601 timestamp, also aligned down to the quarter hour. The window is half-open: a run at exactly `end` is outside it. `start` and `end` inside one quarter-hour bucket leave an empty window and are rejected.
             model: Restrict to one model, e.g. `chatgpt`. See `models.list()`.
             tags: Comma-separated prompt tags. Only prompts carrying at least one of them are counted.
             **options: What one call may set for itself, overriding the client it goes through.
@@ -777,8 +777,8 @@ class AsyncPromptPerformance:
 
         Args:
             brand_id: Brand identifier.
-            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
-            end: Exclusive upper bound of the window, an ISO 8601 timestamp. The window is half-open: a run at exactly `end` is outside it.
+            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. Aligned down to the quarter hour, the grain analytics are aggregated at; where a response repeats the window, it repeats the aligned one. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
+            end: Exclusive upper bound of the window, an ISO 8601 timestamp, also aligned down to the quarter hour. The window is half-open: a run at exactly `end` is outside it. `start` and `end` inside one quarter-hour bucket leave an empty window and are rejected.
             model: Restrict to one model, e.g. `chatgpt`. See `models.list()`.
             tags: Comma-separated prompt tags. Only prompts carrying at least one of them are counted.
             **options: What one call may set for itself, overriding the client it goes through.
@@ -851,8 +851,8 @@ class AsyncQueryFanout:
 
         Args:
             brand_id: Brand identifier.
-            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
-            end: Exclusive upper bound of the window, an ISO 8601 timestamp. The window is half-open: a run at exactly `end` is outside it.
+            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. Aligned down to the quarter hour, the grain analytics are aggregated at; where a response repeats the window, it repeats the aligned one. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
+            end: Exclusive upper bound of the window, an ISO 8601 timestamp, also aligned down to the quarter hour. The window is half-open: a run at exactly `end` is outside it. `start` and `end` inside one quarter-hour bucket leave an empty window and are rejected.
             model: Restrict to one model, e.g. `chatgpt`. See `models.list()`.
             tags: Comma-separated prompt tags. Only prompts carrying at least one of them are counted.
             **options: What one call may set for itself, overriding the client it goes through.

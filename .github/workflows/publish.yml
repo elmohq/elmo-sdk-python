@@ -35,15 +35,15 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - name: Create the GitHub Release v0.1.1
+      - name: Create the GitHub Release v0.1.2
         env:
           GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}
-          TAG: v0.1.1
+          TAG: v0.1.2
         run: |
           if gh release view "$TAG" > /dev/null 2>&1; then exit 0; fi
           gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes-file - <<'NOTES'
-          Published to PyPI as [elmo-sdk 0.1.1](https://pypi.org/project/elmo-sdk/0.1.1/).
+          Published to PyPI as [elmo-sdk 0.1.2](https://pypi.org/project/elmo-sdk/0.1.2/).
 
-          <sub>Generated from [elmohq/elmo@1285e65](https://github.com/elmohq/elmo/commit/1285e6599d1a0b856b9da3cbc1a8040dd77441c6)</sub>
+          <sub>Generated from [elmohq/elmo@f1daf53](https://github.com/elmohq/elmo/commit/f1daf53258bbd822c139d836f92586ef6770c9ae)</sub>
           NOTES

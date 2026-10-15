@@ -82,8 +82,8 @@ class Runs:
         the answer itself.
 
         Args:
-            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
-            end: Exclusive upper bound of the window, an ISO 8601 timestamp. The window is half-open: a run at exactly `end` is outside it.
+            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. Aligned down to the quarter hour, the grain analytics are aggregated at; where a response repeats the window, it repeats the aligned one. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
+            end: Exclusive upper bound of the window, an ISO 8601 timestamp, also aligned down to the quarter hour. The window is half-open: a run at exactly `end` is outside it. `start` and `end` inside one quarter-hour bucket leave an empty window and are rejected.
             model: Restrict to one model, e.g. `chatgpt`. See `models.list()`.
             page: Page number, 1-based. Defaults to `1`.
             limit: Items per page. Values above the maximum are clamped, not rejected. Defaults to `20`.
@@ -189,8 +189,8 @@ class AsyncRuns:
         the answer itself.
 
         Args:
-            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
-            end: Exclusive upper bound of the window, an ISO 8601 timestamp. The window is half-open: a run at exactly `end` is outside it.
+            start: Inclusive lower bound of the window, an ISO 8601 timestamp such as `2026-01-01T00:00:00Z`. Aligned down to the quarter hour, the grain analytics are aggregated at; where a response repeats the window, it repeats the aligned one. A bare `YYYY-MM-DD` is rejected: that is `/prompts/{promptId}/snapshot`'s spelling and means a local calendar day there.
+            end: Exclusive upper bound of the window, an ISO 8601 timestamp, also aligned down to the quarter hour. The window is half-open: a run at exactly `end` is outside it. `start` and `end` inside one quarter-hour bucket leave an empty window and are rejected.
             model: Restrict to one model, e.g. `chatgpt`. See `models.list()`.
             page: Page number, 1-based. Defaults to `1`.
             limit: Items per page. Values above the maximum are clamped, not rejected. Defaults to `20`.
