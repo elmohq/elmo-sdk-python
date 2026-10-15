@@ -8,6 +8,7 @@ from uuid import UUID
 from pydantic import AnyUrl, BaseModel, ConfigDict, Field
 
 from .shared.common import OpenEnum
+from .shared.position import Position, SentimentSummary
 
 
 class DateRange(BaseModel):
@@ -44,8 +45,10 @@ class ShareOfVoiceEntry(BaseModel):
     mentions: int
     name: str
     """Brand or competitor name."""
+    position: Position
     prompts: int
     """Distinct prompts this entity appeared in."""
+    sentiment: SentimentSummary
     share: Annotated[float, Field(ge=0, le=1)]
     """This entity's share of all brand and competitor mentions. Ratio 0–1; multiply by
     100 for a percentage."""
@@ -293,9 +296,11 @@ class PromptPerformance(BaseModel):
     last_run_at: datetime | None = Field(
         ..., validation_alias="lastRunAt", serialization_alias="lastRunAt"
     )
+    position: Position
     prompt_id: UUID = Field(
         ..., validation_alias="promptId", serialization_alias="promptId"
     )
+    sentiment: SentimentSummary
     tags: list[str]
     total_runs: int = Field(
         ..., validation_alias="totalRuns", serialization_alias="totalRuns"
@@ -325,10 +330,70 @@ class ModelVisibility(BaseModel):
     citations: int
     label: str
     model: str
+    position: Position
     runs: int
+    sentiment: SentimentSummary
     visibility: float | None
     """Share of this model's runs that mentioned the brand. Ratio 0–1; multiply by 100
     for a percentage."""
+
+
+class BrandSentimentSeriesItem(BaseModel):
+    model_config: ClassVar[ConfigDict] = ConfigDict(extra="allow")
+    date: date_
+    mixed: Annotated[int, Field(ge=0)]
+    negative: Annotated[int, Field(ge=0)]
+    neutral: Annotated[int, Field(ge=0)]
+    positive: Annotated[int, Field(ge=0)]
+
+
+class BrandSentiment(BaseModel):
+    """**Experimental — the shape may still change.**
+
+    The brand's sentiment over the window, with the counts for each day so a client can
+    chart or smooth them.
+    """
+
+    model_config: ClassVar[ConfigDict] = ConfigDict(
+        validate_by_name=True, use_attribute_docstrings=True, extra="allow"
+    )
+    mixed: Annotated[int, Field(ge=0)]
+    negative: Annotated[int, Field(ge=0)]
+    negative_share: float | None = Field(
+        ..., validation_alias="negativeShare", serialization_alias="negativeShare"
+    )
+    """Negative answers as a fraction of those with a sentiment (the four counts). Ratio
+    0–1; null when there are none."""
+    neutral: Annotated[int, Field(ge=0)]
+    positive: Annotated[int, Field(ge=0)]
+    positive_share: float | None = Field(
+        ..., validation_alias="positiveShare", serialization_alias="positiveShare"
+    )
+    """Positive answers as a fraction of those with a sentiment (the four counts). Ratio
+    0–1; null when there are none."""
+    series: list[BrandSentimentSeriesItem]
+
+
+class BrandPositionSeriesItem(BaseModel):
+    model_config: ClassVar[ConfigDict] = ConfigDict(extra="allow")
+    average: float | None
+    date: date_
+
+
+class BrandPosition(BaseModel):
+    """**Experimental — the shape may still change.**
+
+    The brand's position among the tracked companies the answers name, 1 being named
+    first, averaged over the window and per day.
+    """
+
+    model_config: ClassVar[ConfigDict] = ConfigDict(
+        use_attribute_docstrings=True, extra="allow"
+    )
+    average: float | None
+    """Average position over the window, to one decimal; null when no answer ranks
+    it."""
+    series: list[BrandPositionSeriesItem]
 
 
 class BrandAnalyticsShareOfVoice(BaseModel):
@@ -376,8 +441,8 @@ class BrandAnalyticsVisibility(BaseModel):
 
 class BrandAnalytics(BaseModel):
     """Every non-paginated figure for a brand over one window. There is no parameter for
-    selecting a subset: the four computations behind this share one scope resolution and
-    run concurrently, so a subset would save a caller a fraction of one request and cost
+    selecting a subset: the computations behind this cover the same prompts and run
+    concurrently, so a subset would save a caller a fraction of one request and cost
     everyone a parameter to reason about."""
 
     model_config: ClassVar[ConfigDict] = ConfigDict(
@@ -392,7 +457,9 @@ class BrandAnalytics(BaseModel):
     models: list[ModelVisibility]
     """Per-model visibility and run counts. Only models that produced a run in the
     window appear."""
+    position: BrandPosition
     range: DateRange
+    sentiment: BrandSentiment
     share_of_voice: BrandAnalyticsShareOfVoice = Field(
         ..., validation_alias="shareOfVoice", serialization_alias="shareOfVoice"
     )

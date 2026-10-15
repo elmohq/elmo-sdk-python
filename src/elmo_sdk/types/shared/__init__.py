@@ -8,8 +8,17 @@ if TYPE_CHECKING:
     from .error import Error
     from .mention_entry import MentionEntry, MentionsSummary
     from .pagination import Pagination
+    from .position import Position, SentimentSummary
 
-__all__ = ["Error", "MentionEntry", "MentionsSummary", "OpenEnum", "Pagination"]
+__all__ = [
+    "Error",
+    "MentionEntry",
+    "MentionsSummary",
+    "OpenEnum",
+    "Pagination",
+    "Position",
+    "SentimentSummary",
+]
 
 
 _LAZY_EXPORTS = {
@@ -18,6 +27,8 @@ _LAZY_EXPORTS = {
     "MentionsSummary": (".mention_entry", "MentionsSummary"),
     "OpenEnum": (".common", "OpenEnum"),
     "Pagination": (".pagination", "Pagination"),
+    "Position": (".position", "Position"),
+    "SentimentSummary": (".position", "SentimentSummary"),
 }
 
 

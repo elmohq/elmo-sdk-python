@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "elmo-sdk"
-version = "0.1.2"
+version = "0.1.3"
 description = "Python SDK for the Elmo API"
 readme = "README.md"
 license = "MIT"

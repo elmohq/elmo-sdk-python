@@ -1,16 +1,16 @@
 {
   "targets": {
     "python": {
-      "commit": "f1daf53258bbd822c139d836f92586ef6770c9ae",
-      "contract": "sha256:b3199a0965dc32f3e7e33f43913de8ceb845c9dd7851bb1ef3614d97ac1a754a",
+      "commit": "caf6bfbbd5e008b384c02cb642b39efb8942419f",
+      "contract": "sha256:9c7e3114e4ca265e9f7c553501b12db29a874ffac810036bcfc1606ddcf3b64b",
       "generator": "0.0.24",
       "since": {
-        "commit": "1285e6599d1a0b856b9da3cbc1a8040dd77441c6",
-        "contract": "sha256:4fd0954d986fb1eda22ce36b6f90f4c90e105fac705d06561eae6cd82bf4af93",
+        "commit": "f1daf53258bbd822c139d836f92586ef6770c9ae",
+        "contract": "sha256:b3199a0965dc32f3e7e33f43913de8ceb845c9dd7851bb1ef3614d97ac1a754a",
         "generator": "0.0.24",
-        "version": "0.1.1"
+        "version": "0.1.2"
       },
-      "version": "0.1.2"
+      "version": "0.1.3"
     }
   },
   "version": 1

@@ -7,6 +7,7 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
 
 from .shared.mention_entry import MentionsSummary
+from .shared.position import Position, SentimentSummary
 
 
 class CitedURLEntry(BaseModel):
@@ -61,6 +62,7 @@ class PromptSnapshot(BaseModel):
     )
     """End of the queried date range (YYYY-MM-DD)"""
     mentions: MentionsSummary
+    position: Position
     prompt_id: UUID = Field(
         ..., validation_alias="promptId", serialization_alias="promptId"
     )
@@ -69,6 +71,7 @@ class PromptSnapshot(BaseModel):
         ..., validation_alias="promptValue", serialization_alias="promptValue"
     )
     """The prompt text"""
+    sentiment: SentimentSummary
     start_date: date = Field(
         ..., validation_alias="startDate", serialization_alias="startDate"
     )
