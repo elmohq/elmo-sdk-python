@@ -355,22 +355,16 @@ class BrandSentiment(BaseModel):
     """
 
     model_config: ClassVar[ConfigDict] = ConfigDict(
-        validate_by_name=True, use_attribute_docstrings=True, extra="allow"
+        use_attribute_docstrings=True, extra="allow"
     )
     mixed: Annotated[int, Field(ge=0)]
     negative: Annotated[int, Field(ge=0)]
-    negative_share: float | None = Field(
-        ..., validation_alias="negativeShare", serialization_alias="negativeShare"
-    )
-    """Negative answers as a fraction of those with a sentiment (the four counts). Ratio
-    0–1; null when there are none."""
     neutral: Annotated[int, Field(ge=0)]
     positive: Annotated[int, Field(ge=0)]
-    positive_share: float | None = Field(
-        ..., validation_alias="positiveShare", serialization_alias="positiveShare"
-    )
-    """Positive answers as a fraction of those with a sentiment (the four counts). Ratio
-    0–1; null when there are none."""
+    score: float | None
+    """Net sentiment of the answers with a sentiment: positive counts 1, neutral and
+    mixed 0.5, negative 0, averaged. 0.5 means neutral on balance. Ratio 0–1; null when
+    there are none."""
     series: list[BrandSentimentSeriesItem]
 
 
