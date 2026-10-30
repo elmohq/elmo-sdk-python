@@ -50,17 +50,13 @@ if TYPE_CHECKING:
         AsyncAnalytics,
         AsyncAnalyticsWithResponse,
         AsyncCitations,
-        AsyncCitationsWithResponse,
         AsyncPromptPerformance,
         AsyncPromptPerformanceWithResponse,
         AsyncQueryFanout,
-        AsyncQueryFanoutWithResponse,
         Citations,
-        CitationsWithResponse,
         PromptPerformance,
         PromptPerformanceWithResponse,
         QueryFanout,
-        QueryFanoutWithResponse,
     )
     from .opportunities import (
         AsyncOpportunities,
@@ -357,12 +353,6 @@ class BrandsWithResponse:
         return AnalyticsWithResponse(Analytics(self._client))
 
     @cached_property
-    def citations(self) -> CitationsWithResponse:
-        from .analytics import Citations, CitationsWithResponse
-
-        return CitationsWithResponse(Citations(self._client))
-
-    @cached_property
     def opportunities(self) -> OpportunitiesWithResponse:
         from .opportunities import Opportunities, OpportunitiesWithResponse
 
@@ -373,12 +363,6 @@ class BrandsWithResponse:
         from .analytics import PromptPerformance, PromptPerformanceWithResponse
 
         return PromptPerformanceWithResponse(PromptPerformance(self._client))
-
-    @cached_property
-    def query_fanout(self) -> QueryFanoutWithResponse:
-        from .analytics import QueryFanout, QueryFanoutWithResponse
-
-        return QueryFanoutWithResponse(QueryFanout(self._client))
 
     @cached_property
     def tags(self) -> TagsWithResponse:
@@ -635,12 +619,6 @@ class AsyncBrandsWithResponse:
         return AsyncAnalyticsWithResponse(AsyncAnalytics(self._client))
 
     @cached_property
-    def citations(self) -> AsyncCitationsWithResponse:
-        from .analytics import AsyncCitations, AsyncCitationsWithResponse
-
-        return AsyncCitationsWithResponse(AsyncCitations(self._client))
-
-    @cached_property
     def opportunities(self) -> AsyncOpportunitiesWithResponse:
         from .opportunities import AsyncOpportunities, AsyncOpportunitiesWithResponse
 
@@ -654,12 +632,6 @@ class AsyncBrandsWithResponse:
         )
 
         return AsyncPromptPerformanceWithResponse(AsyncPromptPerformance(self._client))
-
-    @cached_property
-    def query_fanout(self) -> AsyncQueryFanoutWithResponse:
-        from .analytics import AsyncQueryFanout, AsyncQueryFanoutWithResponse
-
-        return AsyncQueryFanoutWithResponse(AsyncQueryFanout(self._client))
 
     @cached_property
     def tags(self) -> AsyncTagsWithResponse:

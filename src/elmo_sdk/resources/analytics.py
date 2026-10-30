@@ -5,6 +5,7 @@ from functools import cached_property
 from typing import TYPE_CHECKING
 
 from .._internal.core.missing import MISSING
+from .._internal.core.page import async_pages, pages
 from .._internal.core.params import (
     group_params,
     keyword_options,
@@ -17,7 +18,7 @@ from .._internal.core.response import (
     send,
     with_response,
 )
-from .._internal.core.types import OperationDescriptor
+from .._internal.core.types import OperationDescriptor, PaginationDescriptor
 from ..client import async_client, client
 from .shared.auth import API_KEY_REQUIREMENTS
 from .shared.request_options import AsyncRequestOptions, RequestOptions
@@ -27,11 +28,12 @@ if TYPE_CHECKING:
 
     from .._internal.core.client import AsyncClient, Client
     from .._internal.core.missing import Missing
+    from .._internal.core.page import AsyncPage, Page
     from ..types.analytics import (
+        CitationDomain,
+        CitationURL,
+        FanoutQuery,
         GetBrandAnalyticsResponse,
-        GetBrandQueryFanoutResponse,
-        ListBrandCitationDomainsResponse,
-        ListBrandCitationURLsResponse,
         ListBrandPromptPerformanceResponse,
     )
 
@@ -48,6 +50,15 @@ LIST_BRAND_CITATION_DOMAINS_DESCRIPTOR = OperationDescriptor(
     auth=API_KEY_REQUIREMENTS,
     interaction="unary",
     method="get",
+    pagination=PaginationDescriptor(
+        style="page",
+        items="data",
+        limit_param="limit",
+        pages="pagination.totalPages",
+        param="page",
+        size="pagination.limit",
+        total="pagination.total",
+    ),
 )
 
 
@@ -56,6 +67,15 @@ LIST_BRAND_CITATION_URLS_DESCRIPTOR = OperationDescriptor(
     auth=API_KEY_REQUIREMENTS,
     interaction="unary",
     method="get",
+    pagination=PaginationDescriptor(
+        style="page",
+        items="data",
+        limit_param="limit",
+        pages="pagination.totalPages",
+        param="page",
+        size="pagination.limit",
+        total="pagination.total",
+    ),
 )
 
 
@@ -72,6 +92,15 @@ GET_BRAND_QUERY_FANOUT_DESCRIPTOR = OperationDescriptor(
     auth=API_KEY_REQUIREMENTS,
     interaction="unary",
     method="get",
+    pagination=PaginationDescriptor(
+        style="page",
+        items="data",
+        limit_param="limit",
+        pages="pagination.totalPages",
+        param="page",
+        size="pagination.limit",
+        total="pagination.total",
+    ),
 )
 
 
@@ -167,8 +196,12 @@ class Domains:
         end: datetime,
         model: str | Missing = MISSING,
         tags: str | Missing = MISSING,
+        page: int | Missing = MISSING,
+        limit: int | Missing = MISSING,
+        q: str | Missing = MISSING,
+        category: str | Missing = MISSING,
         **options: Unpack[RequestOptions],
-    ) -> ListBrandCitationDomainsResponse:
+    ) -> Page[CitationDomain]:
         """List cited domains
 
         Domains the engines cited when answering this brand's prompts, categorized and
@@ -180,10 +213,14 @@ class Domains:
             end: Exclusive upper bound of the window, an ISO 8601 timestamp, also aligned down to the quarter hour. The window is half-open: a run at exactly `end` is outside it. `start` and `end` inside one quarter-hour bucket leave an empty window and are rejected.
             model: Restrict to one model, e.g. `chatgpt`. See `models.list()`.
             tags: Comma-separated prompt tags. Only prompts carrying at least one of them are counted.
+            page: Page number, 1-based. Defaults to `1`.
+            limit: Items per page. Values above the maximum are clamped, not rejected. The default is large enough that most windows fit on the first page. Defaults to `1000`.
+            q: Case-insensitive substring match on the domain, across every domain cited in the window.
+            category: Only rows in this category, as the dashboard classifies them for this brand: `brand`, `competitor`, `editorial`, `reviews`, `ecommerce`, `social`, `developer`, `pr`, `reference`, `institutional` or `other`.
             **options: What one call may set for itself, overriding the client it goes through.
         """
 
-        from ..types.analytics import ListBrandCitationDomainsResponse
+        from ..types.analytics import CitationDomain
 
         call_options = group_params(
             [
@@ -192,36 +229,30 @@ class Domains:
                 {"in": "query", "key": "end"},
                 {"in": "query", "key": "model"},
                 {"in": "query", "key": "tags"},
+                {"in": "query", "key": "page"},
+                {"in": "query", "key": "limit"},
+                {"in": "query", "key": "q"},
+                {"in": "query", "key": "category"},
             ],
             brand_id=brand_id,
             start=start,
             end=end,
             model=model,
             tags=tags,
+            page=page,
+            limit=limit,
+            q=q,
+            category=category,
         )
         call_options = merge_params(
             call_options, rename_options(keyword_options(options, RequestOptions))
         )
-        return send(
+        return pages(
             self.client,
             LIST_BRAND_CITATION_DOMAINS_DESCRIPTOR,
             call_options,
-            ListBrandCitationDomainsResponse.model_validate,
+            CitationDomain.model_validate,
         )
-
-    @cached_property
-    def with_response(self) -> DomainsWithResponse:
-        """The same calls, answering with the reply as well as what it decoded."""
-
-        return DomainsWithResponse(self)
-
-
-class DomainsWithResponse:
-    """The same calls, answering with the reply as well as what it decoded."""
-
-    def __init__(self, domains: Domains) -> None:
-        self._client = domains.client
-        self.list = with_response(domains.list)
 
 
 class URLs:
@@ -240,8 +271,13 @@ class URLs:
         end: datetime,
         model: str | Missing = MISSING,
         tags: str | Missing = MISSING,
+        page: int | Missing = MISSING,
+        limit: int | Missing = MISSING,
+        q: str | Missing = MISSING,
+        category: str | Missing = MISSING,
+        page_type: str | Missing = MISSING,
         **options: Unpack[RequestOptions],
-    ) -> ListBrandCitationURLsResponse:
+    ) -> Page[CitationURL]:
         """List cited URLs
 
         Individual pages the engines cited, with their category and page type.
@@ -252,10 +288,15 @@ class URLs:
             end: Exclusive upper bound of the window, an ISO 8601 timestamp, also aligned down to the quarter hour. The window is half-open: a run at exactly `end` is outside it. `start` and `end` inside one quarter-hour bucket leave an empty window and are rejected.
             model: Restrict to one model, e.g. `chatgpt`. See `models.list()`.
             tags: Comma-separated prompt tags. Only prompts carrying at least one of them are counted.
+            page: Page number, 1-based. Defaults to `1`.
+            limit: Items per page. Values above the maximum are clamped, not rejected. The default is large enough that most windows fit on the first page. Defaults to `1000`.
+            q: Case-insensitive substring match on the URL or page title, across every URL cited in the window.
+            category: Only rows in this category, as the dashboard classifies them for this brand: `brand`, `competitor`, `editorial`, `reviews`, `ecommerce`, `social`, `developer`, `pr`, `reference`, `institutional` or `other`.
+            page_type: Only pages of this type, e.g. `article`, `review` or `product`.
             **options: What one call may set for itself, overriding the client it goes through.
         """
 
-        from ..types.analytics import ListBrandCitationURLsResponse
+        from ..types.analytics import CitationURL
 
         call_options = group_params(
             [
@@ -264,36 +305,32 @@ class URLs:
                 {"in": "query", "key": "end"},
                 {"in": "query", "key": "model"},
                 {"in": "query", "key": "tags"},
+                {"in": "query", "key": "page"},
+                {"in": "query", "key": "limit"},
+                {"in": "query", "key": "q"},
+                {"in": "query", "key": "category"},
+                {"in": "query", "key": "page_type", "map": "pageType"},
             ],
             brand_id=brand_id,
             start=start,
             end=end,
             model=model,
             tags=tags,
+            page=page,
+            limit=limit,
+            q=q,
+            category=category,
+            page_type=page_type,
         )
         call_options = merge_params(
             call_options, rename_options(keyword_options(options, RequestOptions))
         )
-        return send(
+        return pages(
             self.client,
             LIST_BRAND_CITATION_URLS_DESCRIPTOR,
             call_options,
-            ListBrandCitationURLsResponse.model_validate,
+            CitationURL.model_validate,
         )
-
-    @cached_property
-    def with_response(self) -> URLsWithResponse:
-        """The same calls, answering with the reply as well as what it decoded."""
-
-        return URLsWithResponse(self)
-
-
-class URLsWithResponse:
-    """The same calls, answering with the reply as well as what it decoded."""
-
-    def __init__(self, urls: URLs) -> None:
-        self._client = urls.client
-        self.list = with_response(urls.list)
 
 
 class Citations:
@@ -314,27 +351,6 @@ class Citations:
         brand"""
 
         return URLs(self.client)
-
-    @cached_property
-    def with_response(self) -> CitationsWithResponse:
-        """The same calls, answering with the reply as well as what it decoded."""
-
-        return CitationsWithResponse(self)
-
-
-class CitationsWithResponse:
-    """The same calls, answering with the reply as well as what it decoded."""
-
-    def __init__(self, citations: Citations) -> None:
-        self._client = citations.client
-
-    @cached_property
-    def domains(self) -> DomainsWithResponse:
-        return DomainsWithResponse(Domains(self._client))
-
-    @cached_property
-    def urls(self) -> URLsWithResponse:
-        return URLsWithResponse(URLs(self._client))
 
 
 class PromptPerformance:
@@ -429,8 +445,11 @@ class QueryFanout:
         end: datetime,
         model: str | Missing = MISSING,
         tags: str | Missing = MISSING,
+        page: int | Missing = MISSING,
+        limit: int | Missing = MISSING,
+        q: str | Missing = MISSING,
         **options: Unpack[RequestOptions],
-    ) -> GetBrandQueryFanoutResponse:
+    ) -> Page[FanoutQuery]:
         """Get query fan-out
 
         The searches engines ran while answering this brand's prompts. Engines that
@@ -443,10 +462,13 @@ class QueryFanout:
             end: Exclusive upper bound of the window, an ISO 8601 timestamp, also aligned down to the quarter hour. The window is half-open: a run at exactly `end` is outside it. `start` and `end` inside one quarter-hour bucket leave an empty window and are rejected.
             model: Restrict to one model, e.g. `chatgpt`. See `models.list()`.
             tags: Comma-separated prompt tags. Only prompts carrying at least one of them are counted.
+            page: Page number, 1-based. Defaults to `1`.
+            limit: Items per page. Values above the maximum are clamped, not rejected. The default is large enough that most windows fit on the first page. Defaults to `1000`.
+            q: Case-insensitive substring match on the search, across every search run in the window.
             **options: What one call may set for itself, overriding the client it goes through.
         """
 
-        from ..types.analytics import GetBrandQueryFanoutResponse
+        from ..types.analytics import FanoutQuery
 
         call_options = group_params(
             [
@@ -455,36 +477,28 @@ class QueryFanout:
                 {"in": "query", "key": "end"},
                 {"in": "query", "key": "model"},
                 {"in": "query", "key": "tags"},
+                {"in": "query", "key": "page"},
+                {"in": "query", "key": "limit"},
+                {"in": "query", "key": "q"},
             ],
             brand_id=brand_id,
             start=start,
             end=end,
             model=model,
             tags=tags,
+            page=page,
+            limit=limit,
+            q=q,
         )
         call_options = merge_params(
             call_options, rename_options(keyword_options(options, RequestOptions))
         )
-        return send(
+        return pages(
             self.client,
             GET_BRAND_QUERY_FANOUT_DESCRIPTOR,
             call_options,
-            GetBrandQueryFanoutResponse.model_validate,
+            FanoutQuery.model_validate,
         )
-
-    @cached_property
-    def with_response(self) -> QueryFanoutWithResponse:
-        """The same calls, answering with the reply as well as what it decoded."""
-
-        return QueryFanoutWithResponse(self)
-
-
-class QueryFanoutWithResponse:
-    """The same calls, answering with the reply as well as what it decoded."""
-
-    def __init__(self, query_fanout: QueryFanout) -> None:
-        self._client = query_fanout.client
-        self.get = with_response(query_fanout.get)
 
 
 class AsyncAnalytics:
@@ -579,8 +593,12 @@ class AsyncDomains:
         end: datetime,
         model: str | Missing = MISSING,
         tags: str | Missing = MISSING,
+        page: int | Missing = MISSING,
+        limit: int | Missing = MISSING,
+        q: str | Missing = MISSING,
+        category: str | Missing = MISSING,
         **options: Unpack[AsyncRequestOptions],
-    ) -> ListBrandCitationDomainsResponse:
+    ) -> AsyncPage[CitationDomain]:
         """List cited domains
 
         Domains the engines cited when answering this brand's prompts, categorized and
@@ -592,10 +610,14 @@ class AsyncDomains:
             end: Exclusive upper bound of the window, an ISO 8601 timestamp, also aligned down to the quarter hour. The window is half-open: a run at exactly `end` is outside it. `start` and `end` inside one quarter-hour bucket leave an empty window and are rejected.
             model: Restrict to one model, e.g. `chatgpt`. See `models.list()`.
             tags: Comma-separated prompt tags. Only prompts carrying at least one of them are counted.
+            page: Page number, 1-based. Defaults to `1`.
+            limit: Items per page. Values above the maximum are clamped, not rejected. The default is large enough that most windows fit on the first page. Defaults to `1000`.
+            q: Case-insensitive substring match on the domain, across every domain cited in the window.
+            category: Only rows in this category, as the dashboard classifies them for this brand: `brand`, `competitor`, `editorial`, `reviews`, `ecommerce`, `social`, `developer`, `pr`, `reference`, `institutional` or `other`.
             **options: What one call may set for itself, overriding the client it goes through.
         """
 
-        from ..types.analytics import ListBrandCitationDomainsResponse
+        from ..types.analytics import CitationDomain
 
         call_options = group_params(
             [
@@ -604,36 +626,30 @@ class AsyncDomains:
                 {"in": "query", "key": "end"},
                 {"in": "query", "key": "model"},
                 {"in": "query", "key": "tags"},
+                {"in": "query", "key": "page"},
+                {"in": "query", "key": "limit"},
+                {"in": "query", "key": "q"},
+                {"in": "query", "key": "category"},
             ],
             brand_id=brand_id,
             start=start,
             end=end,
             model=model,
             tags=tags,
+            page=page,
+            limit=limit,
+            q=q,
+            category=category,
         )
         call_options = merge_params(
             call_options, rename_options(keyword_options(options, AsyncRequestOptions))
         )
-        return await async_send(
+        return await async_pages(
             self.client,
             LIST_BRAND_CITATION_DOMAINS_DESCRIPTOR,
             call_options,
-            ListBrandCitationDomainsResponse.model_validate,
+            CitationDomain.model_validate,
         )
-
-    @cached_property
-    def with_response(self) -> AsyncDomainsWithResponse:
-        """The same calls, answering with the reply as well as what it decoded."""
-
-        return AsyncDomainsWithResponse(self)
-
-
-class AsyncDomainsWithResponse:
-    """The same calls, answering with the reply as well as what it decoded."""
-
-    def __init__(self, domains: AsyncDomains) -> None:
-        self._client = domains.client
-        self.list = async_with_response(domains.list)
 
 
 class AsyncURLs:
@@ -652,8 +668,13 @@ class AsyncURLs:
         end: datetime,
         model: str | Missing = MISSING,
         tags: str | Missing = MISSING,
+        page: int | Missing = MISSING,
+        limit: int | Missing = MISSING,
+        q: str | Missing = MISSING,
+        category: str | Missing = MISSING,
+        page_type: str | Missing = MISSING,
         **options: Unpack[AsyncRequestOptions],
-    ) -> ListBrandCitationURLsResponse:
+    ) -> AsyncPage[CitationURL]:
         """List cited URLs
 
         Individual pages the engines cited, with their category and page type.
@@ -664,10 +685,15 @@ class AsyncURLs:
             end: Exclusive upper bound of the window, an ISO 8601 timestamp, also aligned down to the quarter hour. The window is half-open: a run at exactly `end` is outside it. `start` and `end` inside one quarter-hour bucket leave an empty window and are rejected.
             model: Restrict to one model, e.g. `chatgpt`. See `models.list()`.
             tags: Comma-separated prompt tags. Only prompts carrying at least one of them are counted.
+            page: Page number, 1-based. Defaults to `1`.
+            limit: Items per page. Values above the maximum are clamped, not rejected. The default is large enough that most windows fit on the first page. Defaults to `1000`.
+            q: Case-insensitive substring match on the URL or page title, across every URL cited in the window.
+            category: Only rows in this category, as the dashboard classifies them for this brand: `brand`, `competitor`, `editorial`, `reviews`, `ecommerce`, `social`, `developer`, `pr`, `reference`, `institutional` or `other`.
+            page_type: Only pages of this type, e.g. `article`, `review` or `product`.
             **options: What one call may set for itself, overriding the client it goes through.
         """
 
-        from ..types.analytics import ListBrandCitationURLsResponse
+        from ..types.analytics import CitationURL
 
         call_options = group_params(
             [
@@ -676,36 +702,32 @@ class AsyncURLs:
                 {"in": "query", "key": "end"},
                 {"in": "query", "key": "model"},
                 {"in": "query", "key": "tags"},
+                {"in": "query", "key": "page"},
+                {"in": "query", "key": "limit"},
+                {"in": "query", "key": "q"},
+                {"in": "query", "key": "category"},
+                {"in": "query", "key": "page_type", "map": "pageType"},
             ],
             brand_id=brand_id,
             start=start,
             end=end,
             model=model,
             tags=tags,
+            page=page,
+            limit=limit,
+            q=q,
+            category=category,
+            page_type=page_type,
         )
         call_options = merge_params(
             call_options, rename_options(keyword_options(options, AsyncRequestOptions))
         )
-        return await async_send(
+        return await async_pages(
             self.client,
             LIST_BRAND_CITATION_URLS_DESCRIPTOR,
             call_options,
-            ListBrandCitationURLsResponse.model_validate,
+            CitationURL.model_validate,
         )
-
-    @cached_property
-    def with_response(self) -> AsyncURLsWithResponse:
-        """The same calls, answering with the reply as well as what it decoded."""
-
-        return AsyncURLsWithResponse(self)
-
-
-class AsyncURLsWithResponse:
-    """The same calls, answering with the reply as well as what it decoded."""
-
-    def __init__(self, urls: AsyncURLs) -> None:
-        self._client = urls.client
-        self.list = async_with_response(urls.list)
 
 
 class AsyncCitations:
@@ -726,27 +748,6 @@ class AsyncCitations:
         brand"""
 
         return AsyncURLs(self.client)
-
-    @cached_property
-    def with_response(self) -> AsyncCitationsWithResponse:
-        """The same calls, answering with the reply as well as what it decoded."""
-
-        return AsyncCitationsWithResponse(self)
-
-
-class AsyncCitationsWithResponse:
-    """The same calls, answering with the reply as well as what it decoded."""
-
-    def __init__(self, citations: AsyncCitations) -> None:
-        self._client = citations.client
-
-    @cached_property
-    def domains(self) -> AsyncDomainsWithResponse:
-        return AsyncDomainsWithResponse(AsyncDomains(self._client))
-
-    @cached_property
-    def urls(self) -> AsyncURLsWithResponse:
-        return AsyncURLsWithResponse(AsyncURLs(self._client))
 
 
 class AsyncPromptPerformance:
@@ -841,8 +842,11 @@ class AsyncQueryFanout:
         end: datetime,
         model: str | Missing = MISSING,
         tags: str | Missing = MISSING,
+        page: int | Missing = MISSING,
+        limit: int | Missing = MISSING,
+        q: str | Missing = MISSING,
         **options: Unpack[AsyncRequestOptions],
-    ) -> GetBrandQueryFanoutResponse:
+    ) -> AsyncPage[FanoutQuery]:
         """Get query fan-out
 
         The searches engines ran while answering this brand's prompts. Engines that
@@ -855,10 +859,13 @@ class AsyncQueryFanout:
             end: Exclusive upper bound of the window, an ISO 8601 timestamp, also aligned down to the quarter hour. The window is half-open: a run at exactly `end` is outside it. `start` and `end` inside one quarter-hour bucket leave an empty window and are rejected.
             model: Restrict to one model, e.g. `chatgpt`. See `models.list()`.
             tags: Comma-separated prompt tags. Only prompts carrying at least one of them are counted.
+            page: Page number, 1-based. Defaults to `1`.
+            limit: Items per page. Values above the maximum are clamped, not rejected. The default is large enough that most windows fit on the first page. Defaults to `1000`.
+            q: Case-insensitive substring match on the search, across every search run in the window.
             **options: What one call may set for itself, overriding the client it goes through.
         """
 
-        from ..types.analytics import GetBrandQueryFanoutResponse
+        from ..types.analytics import FanoutQuery
 
         call_options = group_params(
             [
@@ -867,33 +874,25 @@ class AsyncQueryFanout:
                 {"in": "query", "key": "end"},
                 {"in": "query", "key": "model"},
                 {"in": "query", "key": "tags"},
+                {"in": "query", "key": "page"},
+                {"in": "query", "key": "limit"},
+                {"in": "query", "key": "q"},
             ],
             brand_id=brand_id,
             start=start,
             end=end,
             model=model,
             tags=tags,
+            page=page,
+            limit=limit,
+            q=q,
         )
         call_options = merge_params(
             call_options, rename_options(keyword_options(options, AsyncRequestOptions))
         )
-        return await async_send(
+        return await async_pages(
             self.client,
             GET_BRAND_QUERY_FANOUT_DESCRIPTOR,
             call_options,
-            GetBrandQueryFanoutResponse.model_validate,
+            FanoutQuery.model_validate,
         )
-
-    @cached_property
-    def with_response(self) -> AsyncQueryFanoutWithResponse:
-        """The same calls, answering with the reply as well as what it decoded."""
-
-        return AsyncQueryFanoutWithResponse(self)
-
-
-class AsyncQueryFanoutWithResponse:
-    """The same calls, answering with the reply as well as what it decoded."""
-
-    def __init__(self, query_fanout: AsyncQueryFanout) -> None:
-        self._client = query_fanout.client
-        self.get = async_with_response(query_fanout.get)

@@ -8,6 +8,7 @@ from uuid import UUID
 from pydantic import AnyUrl, BaseModel, ConfigDict, Field
 
 from .shared.common import OpenEnum
+from .shared.pagination import Pagination
 from .shared.position import Position, SentimentSummary
 
 
@@ -131,7 +132,9 @@ class CitationDomainList(BaseModel):
         ..., validation_alias="brandId", serialization_alias="brandId"
     )
     data: list[CitationDomain]
-    """Every domain cited over the window, ordered by citation count."""
+    """This page of the domains cited over the window, ordered by citation count.
+    `totals` covers every domain."""
+    pagination: Pagination
     range: DateRange
     totals: CitationDomainListTotals
 
@@ -213,7 +216,9 @@ class CitationURLList(BaseModel):
         ..., validation_alias="brandId", serialization_alias="brandId"
     )
     data: list[CitationURL]
-    """Every URL cited over the window, ordered by citation count."""
+    """This page of the URLs cited over the window, ordered by citation count. `totals`
+    covers every URL."""
+    pagination: Pagination
     range: DateRange
     totals: CitationURLListTotals
 
@@ -250,12 +255,14 @@ class BrandQueryFanout(BaseModel):
     """Share of fan-out query instances whose answer mentioned the brand. Ratio 0–1;
     multiply by 100 for a percentage."""
     data: list[FanoutQuery]
-    """Every distinct sub-query over the window, ordered by the runs that ran it."""
+    """This page of the distinct sub-queries over the window, ordered by the runs that
+    ran them. The totals cover every query."""
     fanout_runs: int = Field(
         ..., validation_alias="fanoutRuns", serialization_alias="fanoutRuns"
     )
     """Runs that searched at all. Engines that don't expose their searches contribute
     runs but no queries."""
+    pagination: Pagination
     range: DateRange
     total_queries: int = Field(
         ..., validation_alias="totalQueries", serialization_alias="totalQueries"
@@ -467,17 +474,5 @@ GetBrandAnalyticsResponse = BrandAnalytics
 """Get a brand's analytics"""
 
 
-ListBrandCitationDomainsResponse = CitationDomainList
-"""List cited domains"""
-
-
-ListBrandCitationURLsResponse = CitationURLList
-"""List cited URLs"""
-
-
 ListBrandPromptPerformanceResponse = PromptPerformanceList
 """List prompt performance"""
-
-
-GetBrandQueryFanoutResponse = BrandQueryFanout
-"""Get query fan-out"""
