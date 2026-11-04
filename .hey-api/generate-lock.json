@@ -322,7 +322,7 @@
         "src/elmo_sdk/types/runs.py": "6c7e8cde585321505d0805a9f44e643cc424699c7de3faf965e1b85c2d394afd",
         "src/elmo_sdk/types/shared/__init__.py": "94f38c81e1eec3d260f968bccbdb739e695d833b85a884acbdc96e37d826051a",
         "src/elmo_sdk/types/shared/common.py": "58fb908b3a9183c600a16d786aa64ca52194098f031b45541f3935a3ed1c17a8",
-        "src/elmo_sdk/types/shared/error.py": "b240b43c39ca937eec287f4cd88feb8e5a75c4cde78b298a88231f317a4be190",
+        "src/elmo_sdk/types/shared/error.py": "cd51868e0a185bdf8d0f7fad8a070f34af407c8b0b95c4048de614c95ebac7ae",
         "src/elmo_sdk/types/shared/mention_entry.py": "0eb26572554f56137be54ef0e2d1bed841c39bd0f9ac4d9501e8386c76cd0886",
         "src/elmo_sdk/types/shared/pagination.py": "327e2d8f6c720ea190faa7a7428d683ab8cc49c6e73e8790e43c0ad827c532fd",
         "src/elmo_sdk/types/shared/position.py": "59ec37604559b9cd449c0e8de56ca278974cbd8efa037d254d575ca2368906db",

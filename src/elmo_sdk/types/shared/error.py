@@ -9,7 +9,7 @@ class Error(BaseModel):
     model_config: ClassVar[ConfigDict] = ConfigDict(
         use_attribute_docstrings=True, extra="allow"
     )
-    code: str | None = None
+    code: str
     """Stable machine-readable code. Deliberately not an enum: new values are added
     without a version bump, so treat an unrecognized one as its HTTP status implies.
     Currently: `unauthorized`, `insufficient_scope`, `forbidden`, `not_found`,
@@ -19,5 +19,5 @@ class Error(BaseModel):
     `cadence_faster_than_plan`, `internal_error`."""
     error: str
     """Error type"""
-    message: str | None = None
+    message: str
     """Detailed error message"""
