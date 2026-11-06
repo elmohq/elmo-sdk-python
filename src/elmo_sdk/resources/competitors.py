@@ -106,7 +106,9 @@ class Competitors:
         limit: int | Missing = MISSING,
         **options: Unpack[RequestOptions],
     ) -> Page[Competitor]:
-        """
+        """The competitors of the brands this key can reach, newest first. Pass
+        `brandId` for one brand's.
+
         Args:
             page: Page number, 1-based. Defaults to `1`.
             limit: Items per page. Values above the maximum are clamped, not rejected. Defaults to `20`.
@@ -146,6 +148,10 @@ class Competitors:
     ) -> CreateCompetitorResponse:
         """Add a competitor
 
+        A `brandId` outside the key's reach answers `400`, identically to one that does
+        not exist. A brand tracks at most 500 competitors; adding one past that answers
+        `409`.
+
         Args:
             **options: What one call may set for itself, overriding the client it goes through.
         """
@@ -184,6 +190,8 @@ class Competitors:
     ) -> DeleteCompetitorResponse:
         """Delete a competitor
 
+        Permanently delete a competitor. The response is the deleted competitor.
+
         Args:
             competitor_id: Competitor identifier (UUID)
             **options: What one call may set for itself, overriding the client it goes through.
@@ -209,6 +217,9 @@ class Competitors:
         self, competitor_id: UUID, **options: Unpack[RequestOptions]
     ) -> GetCompetitorResponse:
         """Get a competitor
+
+        A competitor outside the key's reach answers `404`, identically to one that does
+        not exist.
 
         Args:
             competitor_id: Competitor identifier (UUID)
@@ -241,6 +252,9 @@ class Competitors:
         **options: Unpack[RequestOptions],
     ) -> UpdateCompetitorResponse:
         """Update a competitor
+
+        Rename a competitor, or replace its domains or aliases. A competitor outside the
+        key's reach answers `404`, identically to one that does not exist.
 
         Args:
             competitor_id: Competitor identifier (UUID)
@@ -309,7 +323,9 @@ class AsyncCompetitors:
         limit: int | Missing = MISSING,
         **options: Unpack[AsyncRequestOptions],
     ) -> AsyncPage[Competitor]:
-        """
+        """The competitors of the brands this key can reach, newest first. Pass
+        `brandId` for one brand's.
+
         Args:
             page: Page number, 1-based. Defaults to `1`.
             limit: Items per page. Values above the maximum are clamped, not rejected. Defaults to `20`.
@@ -348,6 +364,10 @@ class AsyncCompetitors:
         **options: Unpack[AsyncRequestOptions],
     ) -> CreateCompetitorResponse:
         """Add a competitor
+
+        A `brandId` outside the key's reach answers `400`, identically to one that does
+        not exist. A brand tracks at most 500 competitors; adding one past that answers
+        `409`.
 
         Args:
             **options: What one call may set for itself, overriding the client it goes through.
@@ -388,6 +408,8 @@ class AsyncCompetitors:
     ) -> DeleteCompetitorResponse:
         """Delete a competitor
 
+        Permanently delete a competitor. The response is the deleted competitor.
+
         Args:
             competitor_id: Competitor identifier (UUID)
             **options: What one call may set for itself, overriding the client it goes through.
@@ -413,6 +435,9 @@ class AsyncCompetitors:
         self, competitor_id: UUID, **options: Unpack[AsyncRequestOptions]
     ) -> GetCompetitorResponse:
         """Get a competitor
+
+        A competitor outside the key's reach answers `404`, identically to one that does
+        not exist.
 
         Args:
             competitor_id: Competitor identifier (UUID)
@@ -445,6 +470,9 @@ class AsyncCompetitors:
         **options: Unpack[AsyncRequestOptions],
     ) -> UpdateCompetitorResponse:
         """Update a competitor
+
+        Rename a competitor, or replace its domains or aliases. A competitor outside the
+        key's reach answers `404`, identically to one that does not exist.
 
         Args:
             competitor_id: Competitor identifier (UUID)

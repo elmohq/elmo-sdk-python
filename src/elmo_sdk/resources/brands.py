@@ -123,7 +123,8 @@ class Brands:
         limit: int | Missing = MISSING,
         **options: Unpack[RequestOptions],
     ) -> Page[Brand]:
-        """
+        """The brands this key can reach, newest first.
+
         Args:
             page: Page number, 1-based. Defaults to `1`.
             limit: Items per page. Values above the maximum are clamped, not rejected. Defaults to `20`.
@@ -163,6 +164,14 @@ class Brands:
         **options: Unpack[RequestOptions],
     ) -> CreateBrandResponse:
         """Create a brand
+
+        A brand, its competitors and its prompts, created in one request. They are
+        written together, so a request that fails leaves none of them behind, and the
+        prompts are scheduled for execution as soon as the brand exists.
+
+        Brand ids are chosen by the caller and unique across the instance: an id that is
+        already taken answers `409`, without saying who holds it. A competitor with no
+        domain other than the brand's own website is skipped.
 
         Args:
             domains: Brand domains. The first entry is the primary website; remaining entries are additional domains.
@@ -214,6 +223,9 @@ class Brands:
     def get(self, brand_id: str, **options: Unpack[RequestOptions]) -> GetBrandResponse:
         """Get a brand
 
+        A brand outside the key's reach answers `404`, identically to one that does not
+        exist.
+
         Args:
             brand_id: Brand identifier
             **options: What one call may set for itself, overriding the client it goes through.
@@ -245,6 +257,9 @@ class Brands:
         **options: Unpack[RequestOptions],
     ) -> UpdateBrandResponse:
         """Update a brand
+
+        Change a brand's name, domains or aliases. A brand outside the key's reach
+        answers `404`, identically to one that does not exist.
 
         Args:
             brand_id: Brand identifier
@@ -385,7 +400,8 @@ class AsyncBrands:
         limit: int | Missing = MISSING,
         **options: Unpack[AsyncRequestOptions],
     ) -> AsyncPage[Brand]:
-        """
+        """The brands this key can reach, newest first.
+
         Args:
             page: Page number, 1-based. Defaults to `1`.
             limit: Items per page. Values above the maximum are clamped, not rejected. Defaults to `20`.
@@ -425,6 +441,14 @@ class AsyncBrands:
         **options: Unpack[AsyncRequestOptions],
     ) -> CreateBrandResponse:
         """Create a brand
+
+        A brand, its competitors and its prompts, created in one request. They are
+        written together, so a request that fails leaves none of them behind, and the
+        prompts are scheduled for execution as soon as the brand exists.
+
+        Brand ids are chosen by the caller and unique across the instance: an id that is
+        already taken answers `409`, without saying who holds it. A competitor with no
+        domain other than the brand's own website is skipped.
 
         Args:
             domains: Brand domains. The first entry is the primary website; remaining entries are additional domains.
@@ -479,6 +503,9 @@ class AsyncBrands:
     ) -> GetBrandResponse:
         """Get a brand
 
+        A brand outside the key's reach answers `404`, identically to one that does not
+        exist.
+
         Args:
             brand_id: Brand identifier
             **options: What one call may set for itself, overriding the client it goes through.
@@ -510,6 +537,9 @@ class AsyncBrands:
         **options: Unpack[AsyncRequestOptions],
     ) -> UpdateBrandResponse:
         """Update a brand
+
+        Change a brand's name, domains or aliases. A brand outside the key's reach
+        answers `404`, identically to one that does not exist.
 
         Args:
             brand_id: Brand identifier
