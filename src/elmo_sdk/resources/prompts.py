@@ -183,7 +183,7 @@ class Prompts:
                 {"in": "body", "key": "value"},
                 {"in": "body", "key": "tags"},
             ],
-            brand_id=brand_id,
+            brand_id=validate_field(CreatePromptRequest, "brandId", brand_id),
             value=validate_field(CreatePromptRequest, "value", value),
             tags=tags,
         )
@@ -441,7 +441,7 @@ class AsyncPrompts:
                 {"in": "body", "key": "value"},
                 {"in": "body", "key": "tags"},
             ],
-            brand_id=brand_id,
+            brand_id=validate_field(CreatePromptRequest, "brandId", brand_id),
             value=validate_field(CreatePromptRequest, "value", value),
             tags=tags,
         )

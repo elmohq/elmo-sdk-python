@@ -47,7 +47,7 @@ class CreatePromptRequest(BaseModel):
         validate_by_name=True, use_attribute_docstrings=True, extra="allow"
     )
     brand_id: str = Field(
-        ..., validation_alias="brandId", serialization_alias="brandId"
+        ..., min_length=1, validation_alias="brandId", serialization_alias="brandId"
     )
     """Brand identifier this prompt belongs to"""
     tags: list[str] | None = None

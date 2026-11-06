@@ -206,7 +206,9 @@ class Brands:
             prompts=validate_input(
                 builtins.list[CreateBrandRequestPromptsItem], prompts
             ),
-            organization_id=organization_id,
+            organization_id=validate_field(
+                CreateBrandRequest, "organizationId", organization_id
+            ),
         )
         call_options = extend_body(
             merge_params(
@@ -483,7 +485,9 @@ class AsyncBrands:
             prompts=validate_input(
                 builtins.list[CreateBrandRequestPromptsItem], prompts
             ),
-            organization_id=organization_id,
+            organization_id=validate_field(
+                CreateBrandRequest, "organizationId", organization_id
+            ),
         )
         call_options = extend_body(
             merge_params(

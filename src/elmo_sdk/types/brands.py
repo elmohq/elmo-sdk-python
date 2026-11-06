@@ -11,27 +11,27 @@ from .shared.pagination import Pagination
 
 class CreateBrandRequestCompetitorsItem(BaseModel):
     model_config: ClassVar[ConfigDict] = ConfigDict(extra="allow")
-    aliases: list[str] | None = None
-    domains: list[str] | None = None
+    aliases: list[str] = []
+    domains: list[str] = []
     name: Annotated[str, Field(min_length=1)]
 
 
 class CreateBrandRequestCompetitorsItemDict(TypedDict):
-    aliases: NotRequired[list[str] | None]
-    domains: NotRequired[list[str] | None]
+    aliases: NotRequired[list[str]]
+    domains: NotRequired[list[str]]
     name: str
 
 
 class CreateBrandRequestPromptsItem(BaseModel):
     model_config: ClassVar[ConfigDict] = ConfigDict(extra="allow")
     enabled: bool = True
-    tags: list[str] | None = None
+    tags: list[str] = []
     value: Annotated[str, Field(min_length=1)]
 
 
 class CreateBrandRequestPromptsItemDict(TypedDict):
     enabled: NotRequired[bool]
-    tags: NotRequired[list[str] | None]
+    tags: NotRequired[list[str]]
     value: str
 
 
@@ -51,6 +51,7 @@ class CreateBrandRequest(BaseModel):
     name: Annotated[str, Field(min_length=1)]
     organization_id: str | None = Field(
         default=None,
+        min_length=1,
         validation_alias="organizationId",
         serialization_alias="organizationId",
     )

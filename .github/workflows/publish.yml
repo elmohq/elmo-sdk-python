@@ -45,5 +45,5 @@ jobs:
           gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes-file - <<'NOTES'
           Published to PyPI as [elmo-sdk 0.4.0](https://pypi.org/project/elmo-sdk/0.4.0/).
 
-          <sub>Generated from [elmohq/elmo@6c0e890](https://github.com/elmohq/elmo/commit/6c0e8900671397f910391a01cbb861f688c5d2b5)</sub>
+          <sub>Generated from [elmohq/elmo@d586b63](https://github.com/elmohq/elmo/commit/d586b6391f871afe998c9b4818473ef76838befe)</sub>
           NOTES
